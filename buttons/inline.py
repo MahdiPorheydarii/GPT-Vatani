@@ -13,7 +13,11 @@ from config import create_reply_keyboard
 
 
 async def show_chat_modes_handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text, inline_reply_markup = get_chat_mode_menu(0)
+    user_id = update.effective_user.id
+    mysql = Mysql()
+    user = mysql.getOne("select lang from users where user_id=%s", user_id)
+
+    text, inline_reply_markup = get_chat_mode_menu(0, user['lang'])
     await update.message.reply_text(text, reply_markup=inline_reply_markup, parse_mode=ParseMode.HTML)
 
 
@@ -66,8 +70,11 @@ async def show_chat_modes_callback_handle(update: Update, context: ContextTypes.
     page_index = int(query.data.split("|")[1])
     if page_index < 0:
         return
+    user_id = update.effective_user.id
+    mysql = Mysql()
+    user = mysql.getOne("select lang from users where user_id=%s", user_id)
 
-    text, markup = get_chat_mode_menu(page_index)
+    text, markup = get_chat_mode_menu(page_index, user["lang"])
     try:
         await query.edit_message_text(text, reply_markup=markup, parse_mode=ParseMode.HTML)
     except BadRequest as e:
