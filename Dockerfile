@@ -1,7 +1,5 @@
 FROM python:3.9-slim
 
-LABEL org.opencontainers.image.source=https://github.com/V-know/ChatGPT-Telegram-Bot
-
 ARG APP_HOME=/app
 WORKDIR $APP_HOME
 
