@@ -1,0 +1,92 @@
+from db.MySqlConn import config
+
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    MessageHandler,
+    PicklePersistence,
+    ConversationHandler,
+    CallbackQueryHandler,
+    filters)
+
+from config import (
+    language_labels,  # Import language labels from config
+    CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT
+)
+from buttons.inline import (
+    show_chat_modes_handle,
+    show_chat_modes_callback_handle,
+    set_chat_mode_handle,
+    cancel_chat_mode_handle,
+)
+from buttons.language import show_languages, show_languages_callback_handle
+from buttons.help import helper
+from buttons.start import start
+from buttons.role import set_system_content, reset_context, set_system_content_handler
+from buttons.statistics import statistics
+from chat.handler import answer_handler
+from buttons.others import non_text_handler, done, error_handler
+
+
+def main() -> None:
+    """Start the bot."""
+    # Create the Updater and pass it your bot's token.
+    persistence = PicklePersistence(filepath='conversationbot')
+
+    # Create the Application and pass it your bot's token.
+    application = Application.builder().token(config["BOT"]["TOKEN"]).persistence(persistence).build()
+
+    # Define the regex patterns for both English and Persian
+    en_labels = language_labels["en"]
+    fa_labels = language_labels["fa"]
+
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler('start', start)],
+        states={
+            CHOOSING: [
+                MessageHandler(filters.Regex(f'^({en_labels["contact_admin"]}|{fa_labels["contact_admin"]})$'), helper),
+                MessageHandler(filters.Regex(f'^({en_labels["start_button"]}|{fa_labels["start_button"]}|/start|Start|شروع)$'), start),
+                MessageHandler(filters.Regex(f'^({en_labels["language_button"]}|{fa_labels["language_button"]})$'), show_languages),
+                MessageHandler(filters.Regex(f'^({en_labels["reset_context_button"]}|{fa_labels["reset_context_button"]})$'), reset_context),
+                MessageHandler(filters.Regex(f'^({en_labels["set_sys_content_button"]}|{fa_labels["set_sys_content_button"]})$'), set_system_content),
+                MessageHandler(filters.Regex(f'^({en_labels["statistics_button"]}|{fa_labels["statistics_button"]})$'), statistics),
+                MessageHandler(filters.Regex(f'^({en_labels["switch_role_button"]}|{fa_labels["switch_role_button"]})$'), show_chat_modes_handle),
+                MessageHandler(filters.TEXT, answer_handler),
+                MessageHandler(filters.ATTACHMENT, non_text_handler),
+            ],
+            TYPING_REPLY: [
+                MessageHandler(filters.Regex(f'^({en_labels["contact_admin"]}|{fa_labels["contact_admin"]})$'), helper),
+                MessageHandler(filters.Regex(f'^({en_labels["start_button"]}|{fa_labels["start_button"]}|/start|Start|شروع)$'), start),
+                MessageHandler(filters.Regex(f'^({en_labels["language_button"]}|{fa_labels["language_button"]})$'), show_languages),
+                MessageHandler(filters.Regex(f'^({en_labels["reset_context_button"]}|{fa_labels["reset_context_button"]})$'), reset_context),
+                MessageHandler(filters.Regex(f'^({en_labels["set_sys_content_button"]}|{fa_labels["set_sys_content_button"]})$'), set_system_content),
+                MessageHandler(filters.Regex(f'^({en_labels["statistics_button"]}|{fa_labels["statistics_button"]})$'), statistics),
+                MessageHandler(filters.Regex(f'^({en_labels["switch_role_button"]}|{fa_labels["switch_role_button"]})$'), show_chat_modes_handle),
+                MessageHandler(filters.TEXT, answer_handler),
+                MessageHandler(filters.ATTACHMENT, non_text_handler),
+            ],
+            TYPING_SYS_CONTENT: [
+                MessageHandler(filters.TEXT, set_system_content_handler),
+            ],
+        },
+        fallbacks=[MessageHandler(filters.Regex(f'^({en_labels["done_button"]}|{fa_labels["done_button"]})$'), done)],
+        name="my_conversation",
+        persistent=True,
+    )
+
+    application.add_handler(conv_handler)
+
+    application.add_handler(CallbackQueryHandler(show_chat_modes_callback_handle, pattern="^show_chat_modes"))
+    application.add_handler(CallbackQueryHandler(set_chat_mode_handle, pattern="^set_chat_mode"))
+    application.add_handler(CallbackQueryHandler(cancel_chat_mode_handle, pattern="^cancel"))
+    application.add_handler(CallbackQueryHandler(show_languages_callback_handle, pattern="^lang"))
+    
+    # Add the error handler
+    application.add_error_handler(error_handler)
+
+    # Run the bot until the user presses Ctrl-C
+    application.run_polling()
+
+
+if __name__ == "__main__":
+    main()
