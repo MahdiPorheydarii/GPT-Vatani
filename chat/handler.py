@@ -64,8 +64,9 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 messages.append({"role": record["role"], "content": record["content"]})
                 prompt_tokens += count_tokens(record["content"])
             messages.reverse()
-        messages.insert(0, {"role": "system", "content": logged_in_user["system_content"]})
-        prompt_tokens += count_tokens(logged_in_user["system_content"])
+        if logged_in_user["system_content"]:
+            messages.insert(0, {"role": "system", "content": logged_in_user["system_content"]})
+            prompt_tokens += count_tokens(logged_in_user["system_content"])
         messages.append({"role": "user", "content": prompt})
         prompt_tokens += count_tokens(prompt)
 
@@ -114,11 +115,11 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 
 def count_tokens(text):
-    # 使用正则表达式匹配中文汉字、英文单词和标点符号
-    pattern = r"[\u4e00-\u9fa5]|[a-zA-Z]+|[^\s\w]"
-    tokens = re.findall(pattern, text)
+    token_count = 0
+    if text:
+        pattern = r"[\u4e00-\u9fa5]|[a-zA-Z]+|[^\s\w]"
+        tokens = re.findall(pattern, text)
 
-    # 计算token数量
-    token_count = len(tokens)
+        token_count = len(tokens)
 
     return token_count

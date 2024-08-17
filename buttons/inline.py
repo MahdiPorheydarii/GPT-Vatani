@@ -56,7 +56,7 @@ def get_chat_mode_menu(page_index: int, lang: str):
                 InlineKeyboardButton("«", callback_data=f"show_chat_modes|{page_index - 1}"),
                 InlineKeyboardButton("»", callback_data=f"show_chat_modes|{page_index + 1}")
             ])
-    keyboard.append([InlineKeyboardButton("🚫Cancelled", callback_data="cancel")])
+    keyboard.append([InlineKeyboardButton("🚫Cancel", callback_data="cancel")])
 
     inline_reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -117,5 +117,5 @@ async def cancel_chat_mode_handle(update: Update, context: ContextTypes.DEFAULT_
         update.callback_query.message.chat.id,
         text="已取消。\n您可以继续向我提问了" if user[
                                                     "lang"] == "cn" else "Cancelled. \nYou can continue to ask me questions now.",
-        parse_mode=ParseMode.MARKDOWN, reply_markup=create_reply_keyboard(user["lang"])
+        parse_mode=ParseMode.HTML, reply_markup=create_reply_keyboard(user["lang"])
     )
