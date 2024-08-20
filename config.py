@@ -32,11 +32,12 @@ reset_context_button = "🔃Restart Session"
 statistics_button = "📈Statistics"
 switch_role_button = "🙋Switch Roles"
 language_button = "🔤Language"
-reply_keyboard = [
-    [language_button, contact_admin, start_button],
-    [set_sys_content_button, switch_role_button],
-    [reset_context_button, statistics_button],
-]
+voice_button = "Voice 🎤"
+# reply_keyboard = [
+#     [language_button, contact_admin, start_button],
+#     [set_sys_content_button, switch_role_button, voice_button],
+#     [reset_context_button, statistics_button],
+# ]
 
 en_labels = {
     "contact_admin": "🆘Help",
@@ -47,7 +48,8 @@ en_labels = {
     "switch_role_button": "🙋Switch Roles",
     "language_button": "🔤Language",
     "done_button": "Done",
-    "cancel_button": "🚫Cancel"
+    "cancel_button": "🚫Cancel",
+    "voice_button": "Voice 🎤"
 }
 
 fa_labels = {
@@ -59,7 +61,8 @@ fa_labels = {
     "switch_role_button": "🙋تغییر نقش",
     "language_button": "🔤زبان",
     "done_button": "انجام شد",
-    "cancel_button": "🚫لغو"
+    "cancel_button": "🚫لغو",
+    "voice_button": "صدا 🎤"
 }
 
 language_labels = {
@@ -71,7 +74,7 @@ def create_reply_keyboard(lang: str):
     labels = language_labels[lang]
     reply_keyboard = [
         [labels["language_button"], labels["contact_admin"], labels["start_button"]],
-        [labels["set_sys_content_button"], labels["switch_role_button"]],
+        [labels["set_sys_content_button"], labels["switch_role_button"], labels['voice_button']],
         [labels["reset_context_button"], labels["statistics_button"]],
     ]
     return ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)

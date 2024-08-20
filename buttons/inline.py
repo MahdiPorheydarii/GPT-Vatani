@@ -1,4 +1,4 @@
-from telegram.ext import ContextTypes
+from telegram.ext import ContextTypes, CallbackContext
 from telegram.constants import ParseMode
 from telegram.error import BadRequest
 from telegram import (
