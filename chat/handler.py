@@ -48,8 +48,10 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         f"select count(*) as count from records where role='user' and user_id = {user_id} and created_at >=NOW() - INTERVAL {time_span} MINUTE;")
 
     if chat_count.get("count") > rate_limit[level]:
-        reply = f"تعداد رایگان روزانه‌ت پر شده داداژ{emoji.emojize(':rocket:')}\n" \
-                f"هرروز میتونی 3 تا سوال مفتی بپرسی{emoji.emojize(':weary_face:')}\n"
+        reply = f" محدودیت استفاده رایگان{emoji.emojize(':Prohibited:')}\n" \
+                f"شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید. \n"\
+                f"[خرید اشتراک](https://example.com/subscribe)"\
+                f" اگر سوالی دارید، می‌توانید با پشتیبانی تماس بگیرید.\n"
         await update.message.reply_text(reply, reply_markup=create_reply_keyboard(logged_in_user["lang"]))
         return CHOOSING
 
