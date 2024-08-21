@@ -19,7 +19,7 @@ async def voice_options(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text('Please choose your language:', reply_markup=reply_markup)
+    await update.message.reply_text('Please choose one option:', reply_markup=reply_markup)
     return CHOOSING
 
 # Handler for receiving audio files and transcribing them

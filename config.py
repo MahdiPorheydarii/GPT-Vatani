@@ -24,7 +24,7 @@ context_count = config["CONTEXT_COUNT"]
 rate_limit = config["RATE_LIMIT"]
 notification_channel = config.get("NOTIFICATION_CHANNEL")
 
-CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT = range(3)
+CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE = range(4)
 contact_admin = "🆘Help"
 start_button = "🚀Start"
 set_sys_content_button = "🆔Customize Role"
@@ -49,7 +49,8 @@ en_labels = {
     "language_button": "🔤Language",
     "done_button": "Done",
     "cancel_button": "🚫Cancel",
-    "voice_button": "Voice 🎤"
+    "voice_button": "Voice 🎤",
+    "pic_button": "Image Generation🖼"
 }
 
 fa_labels = {
@@ -62,7 +63,8 @@ fa_labels = {
     "language_button": "🔤زبان",
     "done_button": "انجام شد",
     "cancel_button": "🚫لغو",
-    "voice_button": "صدا 🎤"
+    "voice_button": "صدا 🎤",
+    "pic_button": "ساخت تصویر🖼"
 }
 
 language_labels = {
@@ -73,11 +75,11 @@ language_labels = {
 def create_reply_keyboard(lang: str):
     labels = language_labels[lang]
     reply_keyboard = [
-        [labels["language_button"], labels["contact_admin"], labels["start_button"]],
-        [labels["set_sys_content_button"], labels["switch_role_button"], labels['voice_button']],
-        [labels["reset_context_button"], labels["statistics_button"]],
+        [labels["language_button"], labels["start_button"], labels["switch_role_button"]],
+        [labels["set_sys_content_button"], labels['voice_button'], labels['pic_button']],
+        [labels["reset_context_button"], labels["statistics_button"], labels["contact_admin"]],
     ]
-    return ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+    return ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
 
 create_reply_keyboard('en')
 

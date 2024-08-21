@@ -1,5 +1,5 @@
 from db.MySqlConn import config
-
+import asyncio
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -7,11 +7,11 @@ from telegram.ext import (
     PicklePersistence,
     ConversationHandler,
     CallbackQueryHandler,
-    filters)
-
+    filters
+)
 from config import (
-    language_labels,  # Import language labels from config
-    CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT
+    language_labels,
+    CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE
 )
 from buttons.inline import (
     show_chat_modes_handle,
@@ -25,19 +25,15 @@ from buttons.start import start
 from buttons.role import set_system_content, reset_context, set_system_content_handler
 from buttons.statistics import statistics
 from buttons.voice import handle_speech_to_text, transcribe_audio, voice_options
+from buttons.pic import handle_text_to_pic, generate_pic
 from chat.handler import answer_handler
 from buttons.others import non_text_handler, done, error_handler
 
 
 def main() -> None:
-    """Start the bot."""
-    # Create the Updater and pass it your bot's token.
     persistence = PicklePersistence(filepath='conversationbot')
-
-    # Create the Application and pass it your bot's token.
     application = Application.builder().token(config["BOT"]["TOKEN"]).persistence(persistence).build()
 
-    # Define the regex patterns for both English and Persian
     en_labels = language_labels["en"]
     fa_labels = language_labels["fa"]
 
@@ -53,8 +49,8 @@ def main() -> None:
                 MessageHandler(filters.Regex(f'^({en_labels["statistics_button"]}|{fa_labels["statistics_button"]})$'), statistics),
                 MessageHandler(filters.Regex(f'^({en_labels["switch_role_button"]}|{fa_labels["switch_role_button"]})$'), show_chat_modes_handle),
                 MessageHandler(filters.Regex(f'^({en_labels["voice_button"]}|{fa_labels["voice_button"]})$'), voice_options),
-                MessageHandler(filters.TEXT, answer_handler),
-                # MessageHandler(filters.ATTACHMENT, non_text_handler),
+                MessageHandler(filters.Regex(f'^({en_labels["pic_button"]}|{fa_labels["pic_button"]})$'), handle_text_to_pic),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, answer_handler),
             ],
             TYPING_REPLY: [
                 MessageHandler(filters.Regex(f'^({en_labels["contact_admin"]}|{fa_labels["contact_admin"]})$'), helper),
@@ -64,11 +60,13 @@ def main() -> None:
                 MessageHandler(filters.Regex(f'^({en_labels["set_sys_content_button"]}|{fa_labels["set_sys_content_button"]})$'), set_system_content),
                 MessageHandler(filters.Regex(f'^({en_labels["statistics_button"]}|{fa_labels["statistics_button"]})$'), statistics),
                 MessageHandler(filters.Regex(f'^({en_labels["switch_role_button"]}|{fa_labels["switch_role_button"]})$'), show_chat_modes_handle),
-                MessageHandler(filters.TEXT, answer_handler),
-                # MessageHandler(filters.ATTACHMENT, non_text_handler),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, answer_handler),
             ],
             TYPING_SYS_CONTENT: [
-                MessageHandler(filters.TEXT, set_system_content_handler),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, set_system_content_handler),
+            ],
+            TYPING_TEXT_FOR_IMAGE: [
+                MessageHandler(filters.TEXT, generate_pic),
             ],
         },
         fallbacks=[MessageHandler(filters.Regex(f'^({en_labels["done_button"]}|{fa_labels["done_button"]})$'), done)],
@@ -77,20 +75,20 @@ def main() -> None:
     )
 
     application.add_handler(conv_handler)
-
     application.add_handler(CallbackQueryHandler(handle_speech_to_text, pattern="^speech_to_text"))
     application.add_handler(MessageHandler(filters.VOICE | filters.AUDIO, transcribe_audio))
     application.add_handler(CallbackQueryHandler(show_chat_modes_callback_handle, pattern="^show_chat_modes"))
     application.add_handler(CallbackQueryHandler(set_chat_mode_handle, pattern="^set_chat_mode"))
     application.add_handler(CallbackQueryHandler(cancel_chat_mode_handle, pattern="^cancel"))
     application.add_handler(CallbackQueryHandler(show_languages_callback_handle, pattern="^lang"))
-    
-    # Add the error handler
+    application.add_handler(CallbackQueryHandler(handle_text_to_pic, pattern="^text_to_pic"))
+
+    # Error handler
     application.add_error_handler(error_handler)
 
-    # Run the bot until the user presses Ctrl-C
+    # Run the bot until Ctrl-C
     application.run_polling()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

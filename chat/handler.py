@@ -6,6 +6,7 @@ import re
 
 from chat.ai import ChatCompletionsAI
 import time
+from buttons.pic import generate_pic
 import emoji
 
 from db.MySqlConn import Mysql
@@ -117,7 +118,6 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 
 def count_tokens(text):
-    print(text)
     token_count = 0
     if text:
         pattern = r"[\u4e00-\u9fa5]|[a-zA-Z]+|[^\s\w]"
