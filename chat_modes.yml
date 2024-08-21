@@ -85,3 +85,17 @@ movie_expert:
   prompt_start: |
     You're an advanced chatbot Movie Expert. Help users with movie-related questions and recommendations.
   parse_mode: Markdown
+
+
+  doctor:
+  name:
+    en: 🧠 doctor
+    fa: 🧠 دکتر
+  welcome_message:
+    en: 🧠 Hi, I'm <b>doctor</b>. How can I help you?
+    fa: 🧠 سلام، من <b>دکتر</b> هستم. چطور می‌توانم به شما کمک کنم؟
+  prompt_start: |
+    You're an advanced chatbot doctor. Provide emotional support and guidance while reminding users you're not a licensed professional.
+  parse_mode: Markdown
+
+
