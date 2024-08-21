@@ -24,7 +24,7 @@ from buttons.help import helper
 from buttons.start import start
 from buttons.role import set_system_content, reset_context, set_system_content_handler
 from buttons.statistics import statistics
-from buttons.Voice import handle_speech_to_text, transcribe_audio, voice_options
+from buttons.voice import handle_speech_to_text, transcribe_audio, voice_options
 from chat.handler import answer_handler
 from buttons.others import non_text_handler, done, error_handler
 

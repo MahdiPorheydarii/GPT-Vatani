@@ -1,9 +1,9 @@
 import assemblyai as aai
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext, ContextTypes
-import emoji
+import time
 from telegram.constants import ParseMode
-from config import config, CHOOSING
+from config import config, CHOOSING, create_reply_keyboard
 import ast
 from db.MySqlConn import Mysql
 
@@ -37,33 +37,47 @@ async def transcribe_audio(update: Update, context: CallbackContext):
     mysql = Mysql()
     user_id = update.effective_user.id
     user = mysql.getOne(f"select * from users where user_id={user_id}")
-    if user.get('level') < 2:
+
+    chat_count = mysql.getOne(
+        f"select count(*) as count from records where role='user_voice' and user_id = {user_id};")
+
+    if chat_count.get('count') > 2 and user.get('level') < 2:
         reply = f" محدودیت استفاده رایگان😶‍🌫" \
             f"شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید. \n"\
             f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
             f" اگر سوالی دارید، می‌توانید با پشتیبانی تماس بگیرید.\n"
-        await update.message.reply_text(reply, parse_mode="Markdown")
+        await update.message.reply_text(reply, parse_mode="Markdown", reply_markup=create_reply_keyboard(user['lang']))
     elif 'awaiting_audio' in context.user_data and context.user_data['awaiting_audio']:
         context.user_data['awaiting_audio'] = False
         
         file = update.message.voice or update.message.audio
+        if file.duration > 60:
+                reply = f"حداکثر مدت زمان فایل صوتی برای کاربر معمولی 60 ثانیه است.\n" \
+                        f"برای استفاده از این بخش، مدت زمان فایل خود را کاهش دهید یا اشتراک تهیه کنید.\n" \
+                        f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
+                        f" اگر سوالی دارید، می‌توانید با پشتیبانی تماس بگیرید.\n"                
+                await update.message.reply_text(reply, parse_mode="Markdown", reply_markup=create_reply_keyboard(user['lang']))           
 
-        if file:
-            # Download the audio file
+        elif file:
             file_path = await file.get_file()
             path = ast.literal_eval(file_path.to_json())
-            # Transcribe the file using AssemblyAI
+            print(path)
             transcriber = aai.Transcriber()
             transcript = transcriber.transcribe(path['file_path'])
 
-            # Send the transcribed text back to the user
             if transcript.status == aai.TranscriptStatus.error:
-                await update.message.reply_text(f"Error transcribing audio: {transcript.error}")
+                await update.message.reply_text(f"Error transcribing audio: {transcript.error}", reply_markup=create_reply_keyboard(user['lang']))
             else:
-                await update.message.reply_text(f"{transcript.text}")
+                date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                sql = "insert into records (user_id, role, content, created_at, tokens) " \
+                    "values (%s, %s, %s, %s, %s);"
+                value = [user_id, "user_voice", transcript.text, date_time, 0]
+                mysql.insertOne(sql, value)
+                mysql.end()
+                await update.message.reply_text(f"{transcript.text}", reply_markup=create_reply_keyboard(user['lang']))
 
         else:
-            update.message.reply_text("Please send a valid audio file.")
+            update.message.reply_text("Please send a valid audio file.", reply_markup=create_reply_keyboard(user['lang']))
 
 async def handle_text_to_speech(update: Update, context: CallbackContext):
     query = update.callback_query
