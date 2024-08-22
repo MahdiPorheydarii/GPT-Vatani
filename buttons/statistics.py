@@ -13,25 +13,30 @@ async def statistics(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user = update.effective_user
     mysql = Mysql()
     user_id = user.id
-    prompt_tokens = mysql.getMany(
-        f"select sum(tokens) as tokens from records where user_id={user_id} and role='user'", 1)[0]
-    completion_tokens = mysql.getMany(
-        f"select sum(tokens) as tokens from records where user_id={user_id} and role='assistant'", 1)[0]
+    chat_count = mysql.getOne(
+    f"select count(*) as count from records where role='user' and user_id = {user_id} and created_at >=NOW() - INTERVAL 1440 MINUTE;")['count']
+    chat_count = max(0, 3 - chat_count)
+    gpt = mysql.getOne(
+        f"select gpt from users where user_id={user_id}")['gpt']
+    image = mysql.getOne(
+        f"select pic from users where user_id={user_id}")['pic']
+    voice = mysql.getOne(
+        f"select voice from users where user_id={user_id}")['voice']
 
     user_info = mysql.getOne("select * from users where user_id=%s", user_id)
     mysql.end()
 
-    if not prompt_tokens["tokens"]:
-        prompt_tokens["tokens"] = 0
-    if not completion_tokens["tokens"]:
-        completion_tokens["tokens"] = 0
+    if not gpt:
+        gpt = 0
+    if not image:
+        image = 0
 
     await update.message.reply_html(
         statistics_response[user_info["lang"]]
         .safe_substitute(user=user.mention_html(),
-                         prompt_tokens=prompt_tokens["tokens"],
-                         completion_tokens=completion_tokens["tokens"],
-                         total_tokens=prompt_tokens["tokens"] + completion_tokens["tokens"]),
+                         gpt=max(chat_count, gpt),
+                         image=image,
+                         voice=voice),
         reply_markup=create_reply_keyboard(user_info["lang"]), disable_web_page_preview=True
     )
     return CHOOSING

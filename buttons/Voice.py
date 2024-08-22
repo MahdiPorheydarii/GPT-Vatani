@@ -3,11 +3,19 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext, ContextTypes
 import time
 from telegram.constants import ParseMode
+from openai import OpenAI
 from config import config, CHOOSING, create_reply_keyboard
 import ast
 from db.MySqlConn import Mysql
 
-# Set your AssemblyAI API key
+def percent(s):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz !@#$%?>.1234567890-=`'
+    c = 0
+    for i in s:
+        if i not in alphabet:
+            c+=1
+    return 1-c/len(s)
+
 aai.settings.api_key = config['ASS_API_KEY']
 
 async def voice_options(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -62,19 +70,33 @@ async def transcribe_audio(update: Update, context: CallbackContext):
             file_path = await file.get_file()
             path = ast.literal_eval(file_path.to_json())
             print(path)
-            transcriber = aai.Transcriber()
+            conf = aai.TranscriptionConfig(language_detection=True, speech_model=aai.SpeechModel.nano)
+            transcriber = aai.Transcriber(config=conf)
             transcript = transcriber.transcribe(path['file_path'])
 
             if transcript.status == aai.TranscriptStatus.error:
                 await update.message.reply_text(f"Error transcribing audio: {transcript.error}", reply_markup=create_reply_keyboard(user['lang']))
             else:
+                print(percent(transcript.text), transcript.text)
+                if percent(transcript.text) > 0.8:
+                    res = transcript.text
+                else:
+                    client = OpenAI(api_key=config['AI']['TOKEN'])
+                    await file_path.download_to_drive()
+                    print(path['file_path'][path['file_path'].index('ice/')+4:],)
+                    audio_file= open(path['file_path'][path['file_path'].index('ice/')+4:], "rb")
+                    transcription = client.audio.transcriptions.create(
+                        model="whisper-1", 
+                        file=audio_file
+                    )
+                    res = transcription.text
                 date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                 sql = "insert into records (user_id, role, content, created_at, tokens) " \
                     "values (%s, %s, %s, %s, %s);"
-                value = [user_id, "user_voice", transcript.text, date_time, 0]
+                value = [user_id, "user_voice", res, date_time, 0]
                 mysql.insertOne(sql, value)
                 mysql.end()
-                await update.message.reply_text(f"{transcript.text}", reply_markup=create_reply_keyboard(user['lang']))
+                await update.message.reply_text(f"{res}", reply_markup=create_reply_keyboard(user['lang']))
 
         else:
             update.message.reply_text("Please send a valid audio file.", reply_markup=create_reply_keyboard(user['lang']))
@@ -82,5 +104,4 @@ async def transcribe_audio(update: Update, context: CallbackContext):
 async def handle_text_to_speech(update: Update, context: CallbackContext):
     query = update.callback_query
     await query.answer()
-    # Add logic here to process text to speech
     query.edit_message_text(text="Please send the text to convert to speech.")

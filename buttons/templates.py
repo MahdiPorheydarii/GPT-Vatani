@@ -59,21 +59,21 @@ You can start asking questions now!
 statistics_response = {"en": Template("""
 Hi $user!
 
-Your current Token usage is as follows:
+Your current Credit is as follows:
 
-Query: $prompt_tokens Tokens
-Answer: $completion_tokens Tokens
-Total: $total_tokens Tokens
+GPT-4o mini: $gpt Tokens
+Image Model: $image Tokens
+Voice Model: $voice Tokens
 
 Have a nice day!🎉
 """), "fa": Template("""
 سلام $user!
 
-وضعیت فعلی استفاده از توکن شما به شرح زیر است:
+وضعیت فعلی اعتبار شما شما به شرح زیر است:
 
-پرسش: $prompt_tokens توکن
-پاسخ: $completion_tokens توکن
-مجموع: $total_tokens توکن
+GPT-4o mini: $gpt توکن
+مدل تصویری: $image توکن
+مدل صوتی: $voice توکن
 
 روز خوبی داشته باشید!🎉
 """)}

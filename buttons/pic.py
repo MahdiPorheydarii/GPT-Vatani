@@ -11,10 +11,8 @@ async def handle_text_to_pic(update: Update, context: ContextTypes.DEFAULT_TYPE)
     # query = update.callback_query
     # await query.answer()
 
-    # Ask the user to send the text prompt for image generation
-    await update.message.reply_text('Please send the text to make a image of it.')
+    await update.message.reply_text('Please send the text to make a image of it.', reply_markup=create_reply_keyboard())
     
-    # Move to the state where we expect the user to send a text prompt for the image
     return TYPING_TEXT_FOR_IMAGE
 async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
     prompt = update.message.text
@@ -59,13 +57,13 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         with open(image_path, "wb") as f:
                             f.write(image_response.content)
                         
-                        await update.message.reply_photo(photo=open(image_path, "rb"))
+                        await update.message.reply_photo(photo=open(image_path, "rb"), reply_markup=create_reply_keyboard())
                         break
                     else:
                         await asyncio.sleep(0.5)
             else:
-                await update.message.reply_text("Failed to generate the image. Please try again.")
+                await update.message.reply_text("Failed to generate the image. Please try again.", reply_markup=create_reply_keyboard())
     else:
-        await update.message.reply_text("Please send a valid text prompt.")
-
+        await update.message.reply_text("Please send a valid text prompt.", reply_markup=create_reply_keyboard())
+    print("Ret"*100)
     return CHOOSING
