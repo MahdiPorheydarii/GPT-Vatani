@@ -1,5 +1,4 @@
-from config import token
-from openai import AzureOpenAI, OpenAI
+from openai import OpenAI
 from db.MySqlConn import config
 
 OPENAI_CHAT_COMPLETION_OPTIONS = {
@@ -21,7 +20,7 @@ async def ChatCompletionsAI(logged_in_user, messages):
     client = OpenAI(api_key=config["AI"]["TOKEN"])
     with client.chat.completions.with_streaming_response.create(
             messages=messages,
-            max_tokens=token[level],
+            max_tokens=1500,
             **OPENAI_CHAT_COMPLETION_OPTIONS) as response:
         for r in response.parse():
             if r.choices:

@@ -6,13 +6,12 @@ CREATE TABLE `users` (
   `name` varchar(128) DEFAULT NULL,
   `nick_name` varchar(128) DEFAULT NULL,
   `user_id` bigint DEFAULT NULL,
-  `level` tinyint DEFAULT NULL,
-  `parse_mode` varchar(10) DEFAULT 'Markdown',
-  'lang', varchar DEFAULT NULL
   `system_content` varchar(1024) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  'lang', varchar DEFAULT NULL,
+  'gpt', smallint DEFAULT 0,
+  'voice', smallint DEFAULT 0,
+  'pic', smallint DEFAULT 0,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4;
 

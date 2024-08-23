@@ -6,19 +6,15 @@ import re
 
 from chat.ai import ChatCompletionsAI
 import time
-from buttons.pic import generate_pic
 import emoji
 
 from db.MySqlConn import Mysql
 from buttons.templates import token_limit
 from config import (
-    token,
     create_reply_keyboard,
     CHOOSING,
-    rate_limit,
     time_span,
-    notification_channel,
-    context_count)
+    notification_channel)
 
 
 async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -31,9 +27,9 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     user_checkin = mysql.getOne(f"select * from users where user_id={user_id}")
     if not user_checkin:
         date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        sql = "insert into users (user_id, name, nick_name, level, system_content, created_at, lang) values (%s, %s, %s, %s, %s, %s, %s)"
-        value = [user_id, user.username, nick_name, 0, 0, None,
-                 date_time, 'en']
+        sql = "insert into users (user_id, name, nick_name, system_content, created_at, lang, gpt, voice, pic) values (%s, %s, %s, %s, %s, %s, %s)"
+        value = [user_id, user.username, nick_name, 0, None,
+                 date_time, 'en', 0, 3, 3]
         mysql.insertOne(sql, value)
 
     if user_checkin and not user_checkin.get("nick_name"):
@@ -41,14 +37,12 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     logged_in_user = mysql.getOne(f"select * from users where user_id={user_id}")
     parse_mode = logged_in_user.get("parse_mode")
-    # VIP level
-    level = logged_in_user.get("level")
 
     # Rate limit controller
     chat_count = mysql.getOne(
         f"select count(*) as count from records where role='user' and user_id = {user_id} and created_at >=NOW() - INTERVAL {time_span} MINUTE;")
 
-    if chat_count.get("count") > rate_limit[level]:
+    if chat_count.get("count") > 3:
         reply = f" محدودیت استفاده رایگان😶‍🌫" \
             f"شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید. \n"\
             f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
@@ -57,8 +51,8 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         return CHOOSING
 
     placeholder_message = await update.message.reply_text("...")
-    records = mysql.getMany(f"select * from records where user_id={user_id} and reset_at is null order by id desc",
-                            context_count[level])
+    records = mysql.getMany(f"select * from records where user_id={user_id} and role='user' and reset_at is null order by id desc",
+                            3)
     if update.message:
         messages = []
         prompt_tokens = 0
@@ -85,7 +79,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             prev_answer = answer
             try:
                 if status == "length":
-                    answer = token_limit[user_checkin["lang"]].safe_substitute(answer=answer, max_token=token[level])
+                    answer = token_limit[user_checkin["lang"]].safe_substitute(answer=answer, max_token=1500)
                     parse_mode = "Markdown"
                 elif status == "content_filter":
                     answer = f"{answer}\n\nAs an AI assistant, please ask me appropriate questions!！\nPlease contact @AiMessagerBot for more help!" \

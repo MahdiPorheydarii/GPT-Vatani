@@ -19,9 +19,6 @@ logger.addHandler(fh)
 with open("config.yaml") as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
 time_span = config["TIME_SPAN"]
-token = config["MAX_TOKEN"]
-context_count = config["CONTEXT_COUNT"]
-rate_limit = config["RATE_LIMIT"]
 notification_channel = config.get("NOTIFICATION_CHANNEL")
 
 CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE = range(4)
