@@ -7,7 +7,6 @@ from buttons.templates import role, context_info, identity_confirmed
 from config import (
     create_reply_keyboard,
     cancel_markup,
-    context_count,
     CHOOSING,
     TYPING_SYS_CONTENT)
 
@@ -32,7 +31,7 @@ async def reset_context(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     user = mysql.getOne(f"select * from users where user_id={user_id}")
     mysql.end()
     await update.message.reply_text(
-        context_info[user["lang"]].safe_substitute(context_count=context_count[user["level"]]), parse_mode="Markdown",
+        context_info[user["lang"]], parse_mode="Markdown",
         disable_web_page_preview=True)
     return CHOOSING
 

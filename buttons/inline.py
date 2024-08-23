@@ -96,8 +96,8 @@ async def set_chat_mode_handle(update: Update, context: ContextTypes.DEFAULT_TYP
     mysql = Mysql()
     user = mysql.getOne("select lang from users where user_id=%s", user_id)
 
-    mysql.update("update users set system_content=%s, parse_mode=%s, nick_name=%s where user_id=%s",
-                 (chat_modes[system_content]['prompt_start'], chat_modes[system_content]["parse_mode"], nick_name,
+    mysql.update("update users set system_content=%s, nick_name=%s where user_id=%s",
+                 (chat_modes[system_content]['prompt_start'], nick_name,
                   user_id))
     reset_at = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     mysql.update("update records set reset_at=%s where user_id=%s and reset_at is null", (reset_at, user_id))

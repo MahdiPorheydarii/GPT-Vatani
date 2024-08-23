@@ -49,7 +49,7 @@ async def transcribe_audio(update: Update, context: CallbackContext):
     chat_count = mysql.getOne(
         f"select count(*) as count from records where role='user_voice' and user_id = {user_id};")
 
-    if chat_count.get('count') > 2 and user.get('level') < 2:
+    if chat_count.get('count') > 2 and user.get('voice') < 1:
         reply = f" محدودیت استفاده رایگان😶‍🌫" \
             f"شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید. \n"\
             f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\

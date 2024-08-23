@@ -37,11 +37,11 @@ In case you want to stop this setting, just reply: `cancel`‍🤝‍
 """)}
 
 context_info = {"en": Template("""
-Each time you ask a question, the AI will provide an answer considering your most recent $context_count conversations!
+Each time you ask a question, the AI will provide an answer considering your recent conversations, untill it restarts!
 
 Your conversation history has now been cleared, and you can start asking questions again!
 """), "fa": Template("""
-هر بار که سوالی بپرسید، هوش مصنوعی با در نظر گرفتن آخرین $context_count مکالمات شما به شما پاسخ خواهد داد!
+هر بار که سوالی بپرسید، هوش مصنوعی با در نظر گرفتن آخرین مکالمات شما به شما پاسخ خواهد داد، تا زمانی که آن‌را ریست کنید!
 
 تاریخچه مکالمات شما اکنون پاک شده است و می‌توانید دوباره شروع به پرسش کنید!
 """)}
@@ -97,3 +97,11 @@ $answer
 
 لطفاً با @MahdiPorheydari برای دریافت توکن‌های بیشتر تماس بگیرید! ✅
 """)}
+
+# generating = {
+#     "en": Template("""
+
+# """),
+#     "fa": Template("""
+# درحال دریافت پاسخ.
+# """)}
