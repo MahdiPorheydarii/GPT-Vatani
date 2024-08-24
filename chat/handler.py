@@ -42,7 +42,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     chat_count = mysql.getOne(
         f"select count(*) as count from records where role='user' and user_id = {user_id} and created_at >=NOW() - INTERVAL {time_span} MINUTE;")
 
-    if chat_count.get("count") > 3:
+    if chat_count.get("count") > 2 and logged_in_user.get('gtp') < 1:
         reply = f" محدودیت استفاده رایگان😶‍🌫" \
             f"شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید. \n"\
             f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
@@ -71,6 +71,8 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         prev_answer = ""
         index = 0
         answer = ""
+        cnt = logged_in_user.get('gpt')
+        mysql.update("Update users set gpt = %s where user_id = %s", [cnt-1, logged_in_user.get('user_id')])
         async for reply in replies:
             index += 1
             answer, status = reply
