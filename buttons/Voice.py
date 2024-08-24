@@ -59,7 +59,7 @@ async def transcribe_audio(update: Update, context: CallbackContext):
         context.user_data['awaiting_audio'] = False
         
         file = update.message.voice or update.message.audio
-        if file.duration > 60:
+        if file.duration > 60 and user.get('voice') < 1:
                 reply = f"حداکثر مدت زمان فایل صوتی برای کاربر معمولی 60 ثانیه است.\n" \
                         f"برای استفاده از این بخش، مدت زمان فایل خود را کاهش دهید یا اشتراک تهیه کنید.\n" \
                         f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
@@ -77,6 +77,7 @@ async def transcribe_audio(update: Update, context: CallbackContext):
             if transcript.status == aai.TranscriptStatus.error:
                 await update.message.reply_text(f"Error transcribing audio: {transcript.error}", reply_markup=create_reply_keyboard(user['lang']))
             else:
+                mysql.update("Update users set voice = %s where user_id=%s", [user.get('voice')-1, user_id])
                 print(percent(transcript.text), transcript.text)
                 if percent(transcript.text) > 0.8:
                     res = transcript.text
