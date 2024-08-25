@@ -19,6 +19,12 @@ from buttons.inline import (
     set_chat_mode_handle,
     cancel_chat_mode_handle,
 )
+from buttons.subscription import (
+    show_payment_options,
+    show_subscription_options,
+    show_subscription_plans,
+    generate_payment_link
+)
 from buttons.language import show_languages, show_languages_callback_handle
 from buttons.help import helper
 from buttons.start import start
@@ -50,6 +56,7 @@ def main() -> None:
                 MessageHandler(filters.Regex(f'^({en_labels["switch_role_button"]}|{fa_labels["switch_role_button"]})$'), show_chat_modes_handle),
                 MessageHandler(filters.Regex(f'^({en_labels["voice_button"]}|{fa_labels["voice_button"]})$'), voice_options),
                 MessageHandler(filters.Regex(f'^({en_labels["pic_button"]}|{fa_labels["pic_button"]})$'), handle_text_to_pic),
+                MessageHandler(filters.Regex(f'^({en_labels["subscription_button"]}|{fa_labels["subscription_button"]})$'), show_subscription_options),
                 MessageHandler(filters.TEXT & ~filters.COMMAND, answer_handler),
             ],
             TYPING_REPLY: [
@@ -82,6 +89,10 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(cancel_chat_mode_handle, pattern="^cancel"))
     application.add_handler(CallbackQueryHandler(show_languages_callback_handle, pattern="^lang"))
     application.add_handler(CallbackQueryHandler(handle_text_to_pic, pattern="^text_to_pic"))
+    application.add_handler(CallbackQueryHandler(show_subscription_plans, pattern="^subscription_"))
+    application.add_handler(CallbackQueryHandler(show_payment_options, pattern="^plan_"))
+    application.add_handler(CallbackQueryHandler(generate_payment_link, pattern="^pay_"))
+
 
     # Error handler
     application.add_error_handler(error_handler)
