@@ -93,13 +93,9 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(show_payment_options, pattern="^plan_"))
     application.add_handler(CallbackQueryHandler(generate_payment_link, pattern="^pay_"))
 
-
-    # Error handler
     application.add_error_handler(error_handler)
 
-    # Run the bot until Ctrl-C
     application.run_polling()
-
 
 if __name__ == "__main__":
     asyncio.run(main())
