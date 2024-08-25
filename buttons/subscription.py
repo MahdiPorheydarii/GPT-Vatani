@@ -34,7 +34,7 @@ async def show_subscription_plans(update: Update, context: CallbackContext):
         ]
     if query.data == "subscription_voice":
         plans_keyboard = [
-            [InlineKeyboardButton(text="1 Month - 100,000 IR Rial", callback_data="plan_voice_1m")],
+            [InlineKeyboardButton(text="", callback_data="plan_voice_1m")],
             [InlineKeyboardButton(text="3 Months - 250,000 IR Rial", callback_data="plan_voice_3m")],
             [InlineKeyboardButton(text="1 Year - 900,000 IR Rial", callback_data="plan_voice_1y")],
             [InlineKeyboardButton(text="Back", callback_data="subscription_options")]

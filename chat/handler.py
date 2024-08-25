@@ -50,7 +50,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         mysql.end()
         return CHOOSING
 
-    placeholder_message = await update.message.reply_text("...")
+    placeholder_message = await update.message.reply_text("ㅤ")
     records = mysql.getMany(f"select * from records where user_id={user_id} and role='user' and reset_at is null order by id desc",
                             3)
     if update.message:
@@ -72,7 +72,8 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         index = 0
         answer = ""
         cnt = logged_in_user.get('gpt')
-        mysql.update("Update users set gpt = %s where user_id = %s", [cnt-1, logged_in_user.get('user_id')])
+        if cnt > 1:
+            mysql.update("Update users set gpt = %s where user_id = %s", [cnt-1, logged_in_user.get('user_id')])
         async for reply in replies:
             index += 1
             answer, status = reply

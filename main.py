@@ -88,7 +88,6 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(set_chat_mode_handle, pattern="^set_chat_mode"))
     application.add_handler(CallbackQueryHandler(cancel_chat_mode_handle, pattern="^cancel"))
     application.add_handler(CallbackQueryHandler(show_languages_callback_handle, pattern="^lang"))
-    application.add_handler(CallbackQueryHandler(handle_text_to_pic, pattern="^text_to_pic"))
     application.add_handler(CallbackQueryHandler(show_subscription_plans, pattern="^subscription_"))
     application.add_handler(CallbackQueryHandler(show_payment_options, pattern="^plan_"))
     application.add_handler(CallbackQueryHandler(generate_payment_link, pattern="^pay_"))

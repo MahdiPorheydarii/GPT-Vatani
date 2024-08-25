@@ -3,18 +3,22 @@ from telegram import Update
 from telegram.ext import CallbackContext, ContextTypes
 from config import config, create_reply_keyboard, TYPING_TEXT_FOR_IMAGE, CHOOSING
 import asyncio
-import os
+from db.MySqlConn import Mysql
 
 API_KEY = config['PIC_API_KEY']
 
 async def handle_text_to_pic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    # query = update.callback_query
-    # await query.answer()
+    mysql = Mysql()
+    user = mysql.getOne("select * from users where user_id=%s", update.effective_user.id)
+    mysql.end()
 
-    await update.message.reply_text('Please send the text to make a image of it.', reply_markup=create_reply_keyboard())
+    await update.message.reply_text('Please send the text to make a image of it.', reply_markup=create_reply_keyboard(user.get('lang')))
     
     return TYPING_TEXT_FOR_IMAGE
 async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    mysql = Mysql()
+    user = mysql.getOne("select * from users where user_id=%s", update.effective_user.id)
+    mysql.end()
     prompt = update.message.text
     
     if prompt:
@@ -51,19 +55,19 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         image_url = status_data['result']['output'][0]
                         image_response = await client.get(image_url)
                         
-                        # Save and send the image
                         print(status_data)
                         image_path = image_url[image_url.index('com') + 4:]
                         with open(image_path, "wb") as f:
                             f.write(image_response.content)
                         
-                        await update.message.reply_photo(photo=open(image_path, "rb"), reply_markup=create_reply_keyboard())
-                        break
+                        await update.message.reply_photo(photo=open(image_path, "rb"), reply_markup=create_reply_keyboard(user.get('lang')))
+                        return CHOOSING
                     else:
                         await asyncio.sleep(0.5)
             else:
-                await update.message.reply_text("Failed to generate the image. Please try again.", reply_markup=create_reply_keyboard())
+                await update.message.reply_text("Failed to generate the image. Please try again.", reply_markup=create_reply_keyboard(user.get('lang')))
+                return CHOOSING
     else:
-        await update.message.reply_text("Please send a valid text prompt.", reply_markup=create_reply_keyboard())
+        await update.message.reply_text("Please send a valid text prompt.", reply_markup=create_reply_keyboard(user.get('lang')))
     print("Ret"*100)
     return CHOOSING
