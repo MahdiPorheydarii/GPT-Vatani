@@ -8,13 +8,12 @@ OPENAI_CHAT_COMPLETION_OPTIONS = {
     "presence_penalty": 0,
     "stream": True,
     "stop": None,
-    "model": config["AI"]["MODEL"]
 }
 
 
 async def ChatCompletionsAI(logged_in_user, messages):
-    level = logged_in_user.get("level")
-
+    sub = logged_in_user.get("sub")
+    OPENAI_CHAT_COMPLETION_OPTIONS['model'] = ['gpt-4o-mini', 'gpt-4o'][max(0, sub-1)]
     answer = ""
 
     client = OpenAI(api_key=config["AI"]["TOKEN"])

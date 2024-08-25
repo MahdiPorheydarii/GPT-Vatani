@@ -33,7 +33,7 @@ from buttons.statistics import statistics
 from buttons.voice import handle_speech_to_text, transcribe_audio, voice_options
 from buttons.pic import handle_text_to_pic, generate_pic
 from chat.handler import answer_handler
-from buttons.others import non_text_handler, done, error_handler
+from buttons.others import done, error_handler
 
 
 def main() -> None:
