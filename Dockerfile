@@ -1,10 +1,11 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
-ARG APP_HOME=/app
-WORKDIR $APP_HOME
+WORKDIR /app
 
-ADD . $APP_HOME
+COPY requirements.txt .
 
-RUN pip install cryptography && pip install -r $APP_HOME/requirements.txt
+RUN pip install -r requirements.txt
 
-ENTRYPOINT ["python", "main.py"]
+COPY . .
+
+CMD ["python", "main.py"]

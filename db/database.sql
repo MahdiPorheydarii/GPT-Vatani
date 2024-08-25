@@ -12,6 +12,7 @@ CREATE TABLE `users` (
   'gpt', smallint DEFAULT 0,
   'voice', smallint DEFAULT 0,
   'pic', smallint DEFAULT 0,
+  'sub', smallint DEFAULT 0,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4;
 

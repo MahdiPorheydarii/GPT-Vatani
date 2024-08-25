@@ -87,7 +87,7 @@ movie_expert:
   parse_mode: Markdown
 
 
-  doctor:
+doctor:
   name:
     en: 🧠 doctor
     fa: 🧠 دکتر

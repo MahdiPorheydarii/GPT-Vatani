@@ -105,7 +105,7 @@ async def set_chat_mode_handle(update: Update, context: ContextTypes.DEFAULT_TYP
 
     await context.bot.send_message(
         update.callback_query.message.chat.id,
-        f"{chat_modes[system_content]['welcome_message'][user["lang"]]}",
+        f"{chat_modes[system_content]['welcome_message']}",
         parse_mode=ParseMode.HTML, reply_markup=create_reply_keyboard(user["lang"])
     )
 
