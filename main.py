@@ -34,7 +34,7 @@ from buttons.voice import transcribe_audio, voice_options, tts, handle_voice
 from buttons.pic import handle_text_to_pic, generate_pic
 from chat.handler import answer_handler
 from buttons.others import done, error_handler
-from buttons.ref import show_referral_info
+from buttons.ref import show_referral_info, exchange, exchange_handler
 
 
 def main() -> None:
@@ -96,6 +96,8 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(show_subscription_plans, pattern="^subscription_"))
     application.add_handler(CallbackQueryHandler(show_payment_options, pattern="^plan_"))
     application.add_handler(CallbackQueryHandler(generate_payment_link, pattern="^pay_"))
+    application.add_handler(CallbackQueryHandler(exchange_handler, pattern="^exc_"))
+    application.add_handler(CallbackQueryHandler(exchange, pattern="^ex"))
 
     application.add_error_handler(error_handler)
 
