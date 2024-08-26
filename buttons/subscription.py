@@ -1,6 +1,5 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
-# from config import prices
 
 async def show_subscription_options(update: Update, context: CallbackContext, query = None):
 

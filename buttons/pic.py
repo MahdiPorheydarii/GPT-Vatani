@@ -1,6 +1,6 @@
 import httpx
 from telegram import Update
-from telegram.ext import CallbackContext, ContextTypes
+from telegram.ext import ContextTypes
 from config import config, create_reply_keyboard, TYPING_TEXT_FOR_IMAGE, CHOOSING
 import asyncio
 from db.MySqlConn import Mysql

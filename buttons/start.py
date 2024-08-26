@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 import time
-
+from buttons.language import show_languages
 from config import (
     create_reply_keyboard,
     CHOOSING)
@@ -43,4 +43,5 @@ Do you know what's great about me? I can help you with anything from giving advi
         """,
         reply_markup=create_reply_keyboard('en'), disable_web_page_preview=True
     )
+    await show_languages(update, context)
     return CHOOSING

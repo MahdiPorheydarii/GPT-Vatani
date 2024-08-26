@@ -3,7 +3,6 @@ import string
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
 from db.MySqlConn import Mysql
-from config import create_reply_keyboard
 
 async def generate_referral_link(user_id):
     code = ''.join(random.choices(string.ascii_letters + string.digits, k=8))

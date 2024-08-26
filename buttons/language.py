@@ -1,5 +1,5 @@
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import ContextTypes, CallbackContext
+from telegram.ext import ContextTypes
 from db.MySqlConn import Mysql
 from config import CHOOSING, create_reply_keyboard
 
