@@ -11,7 +11,7 @@ from telegram.ext import (
 )
 from config import (
     language_labels,
-    CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE
+    CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE, VOICE
 )
 from buttons.inline import (
     show_chat_modes_handle,
@@ -30,7 +30,7 @@ from buttons.help import helper
 from buttons.start import start
 from buttons.role import set_system_content, reset_context, set_system_content_handler
 from buttons.statistics import statistics
-from buttons.voice import handle_speech_to_text, transcribe_audio, voice_options
+from buttons.voice import transcribe_audio, voice_options, tts, handle_voice
 from buttons.pic import handle_text_to_pic, generate_pic
 from chat.handler import answer_handler
 from buttons.others import done, error_handler
@@ -75,6 +75,10 @@ def main() -> None:
             TYPING_TEXT_FOR_IMAGE: [
                 MessageHandler(filters.TEXT, generate_pic),
             ],
+            VOICE: [
+                MessageHandler(filters.TEXT, tts),
+                MessageHandler(filters.VOICE | filters.AUDIO, transcribe_audio)
+            ],
         },
         fallbacks=[MessageHandler(filters.Regex(f'^({en_labels["done_button"]}|{fa_labels["done_button"]})$'), done)],
         name="my_conversation",
@@ -82,8 +86,7 @@ def main() -> None:
     )
 
     application.add_handler(conv_handler)
-    application.add_handler(CallbackQueryHandler(handle_speech_to_text, pattern="^speech_to_text"))
-    application.add_handler(MessageHandler(filters.VOICE | filters.AUDIO, transcribe_audio))
+    application.add_handler(CallbackQueryHandler(handle_voice, pattern="^voice_"))
     application.add_handler(CallbackQueryHandler(show_chat_modes_callback_handle, pattern="^show_chat_modes"))
     application.add_handler(CallbackQueryHandler(set_chat_mode_handle, pattern="^set_chat_mode"))
     application.add_handler(CallbackQueryHandler(cancel_chat_mode_handle, pattern="^cancel"))

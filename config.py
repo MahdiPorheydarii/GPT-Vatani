@@ -21,7 +21,7 @@ with open("config.yaml") as f:
 time_span = config["TIME_SPAN"]
 notification_channel = config.get("NOTIFICATION_CHANNEL")
 
-CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE = range(4)
+CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE, VOICE = range(5)
 
 en_labels = {
     "contact_admin": "🆘Help",
