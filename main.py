@@ -34,6 +34,7 @@ from buttons.voice import transcribe_audio, voice_options, tts, handle_voice
 from buttons.pic import handle_text_to_pic, generate_pic
 from chat.handler import answer_handler
 from buttons.others import done, error_handler
+from buttons.ref import show_referral_info
 
 
 def main() -> None:
@@ -57,6 +58,7 @@ def main() -> None:
                 MessageHandler(filters.Regex(f'^({en_labels["voice_button"]}|{fa_labels["voice_button"]})$'), voice_options),
                 MessageHandler(filters.Regex(f'^({en_labels["pic_button"]}|{fa_labels["pic_button"]})$'), handle_text_to_pic),
                 MessageHandler(filters.Regex(f'^({en_labels["subscription_button"]}|{fa_labels["subscription_button"]})$'), show_subscription_options),
+                MessageHandler(filters.Regex(f'^({en_labels["ref_button"]}|{fa_labels["ref_button"]})$'), show_referral_info),
                 MessageHandler(filters.TEXT & ~filters.COMMAND, answer_handler),
             ],
             TYPING_REPLY: [

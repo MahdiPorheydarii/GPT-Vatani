@@ -13,6 +13,8 @@ CREATE TABLE `users` (
   'voice', smallint DEFAULT 0,
   'pic', smallint DEFAULT 0,
   'sub', smallint DEFAULT 0,
+  'ref_link', varchar(128) DEFAULT NULL,
+  'ref_count', smallint DEFAULT 0,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4;
 

@@ -35,7 +35,8 @@ en_labels = {
     "cancel_button": "🚫Cancel",
     "voice_button": "Voice 🎤",
     "pic_button": "Image Generation🖼",
-    "subscription_button": "Subscription 💳"
+    "subscription_button": "Subscription 💳",
+    "ref_button": "Referral 👤"
 }
 
 fa_labels = {
@@ -50,7 +51,8 @@ fa_labels = {
     "cancel_button": "🚫لغو",
     "voice_button": "صدا 🎤",
     "pic_button": "ساخت تصویر 🖼",
-    "subscription_button": "اشتراک 💳"
+    "subscription_button": "اشتراک 💳",
+    "ref_button": "دعوت 👤"
 }
 
 language_labels = {
@@ -62,8 +64,8 @@ def create_reply_keyboard(lang: str):
     labels = language_labels[lang]
     reply_keyboard = [
         [labels["language_button"], labels["start_button"], labels["switch_role_button"]],
-        [labels["set_sys_content_button"], labels['voice_button'], labels['pic_button']],
-        [labels["reset_context_button"], labels["statistics_button"], labels["contact_admin"], labels['subscription_button']],
+        [labels["set_sys_content_button"], labels["reset_context_button"], labels['voice_button'], labels['pic_button']],
+        [labels['subscription_button'], labels["statistics_button"], labels["contact_admin"], labels['ref_button']],
     ]
     return ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
 
