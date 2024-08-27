@@ -6,14 +6,14 @@ If anything went wrong, just type: /start or restart the Bot to reset it.
 
 or 
 
-contact 👉 @MahdiPorheydari 👈 for more help!
+contact 👉 @MyGPT_PR 👈 for more help!
 """,
     "fa": """
 اگر مشکلی پیش آمد، فقط تایپ کنید: /start یا ربات را ریستارت کنید تا تنظیمات به حالت اولیه بازگردد.
 
 یا
 
-با 👉 @MahdiPorheydari 👈 برای کمک بیشتر تماس بگیرید!
+با 👉 @MyGPT_PR 👈 برای کمک بیشتر تماس بگیرید!
 """}
 
 role = {
@@ -86,7 +86,7 @@ $answer
 
 The length of the answer has exceeded your current maximum limit of $max_token tokens per answer.
 
-Please contact @MahdiPorheydari for more Tokens!✅
+Please contact @MyGPT_PR for more Tokens!✅
 """),
     "fa": Template("""
 $answer
@@ -95,7 +95,7 @@ $answer
 
 طول پاسخ از حداکثر مجاز فعلی شما به تعداد $max_token توکن در هر پاسخ فراتر رفته است.
 
-لطفاً با @MahdiPorheydari برای دریافت توکن‌های بیشتر تماس بگیرید! ✅
+لطفاً با @MyGPT_PRبرای دریافت توکن‌های بیشتر تماس بگیرید! ✅
 """)}
 
 # generating = {
@@ -105,3 +105,84 @@ $answer
 #     "fa": Template("""
 # درحال دریافت پاسخ.
 # """)}
+
+
+give_referral_link = {
+    "en": Template("""
+Here's your unique referral link: ${referral_link}. Share it with friends to earn rewards!
+Every successful referral brings you closer to unlocking special features\n
+Referrals count: ${referral_count}
+"""),
+    "fa": Template("""این لینک ارجاع منحصربه‌فرد شماست: ${referral_link}. آن را با دوستان خود به اشتراک بگذارید تا جوایز دریافت کنید!
+هر ارجاع موفقیت‌آمیز شما را به باز کردن ویژگی‌های ویژه نزدیک‌تر می‌کند\n
+تعداد ارجاع : ${referral_count}
+""")
+}
+
+
+
+
+referral_limit = {
+    "en": Template("""
+
+It looks like you don't have enough referrals to complete this exchange.
+You need more referrals to get the GPT Mini feature. Keep sharing your referral link to unlock more rewards!
+"""),
+    "fa": Template("""
+به نظر می‌رسد که شما تعداد کافی ارجاع برای این مبادله را ندارید.
+شما به ارجاع بیشتر نیاز دارید تا ویژگی GPT Mini را فعال کنید. لینک ارجاع خود را بیشتر به اشتراک بگذارید تا جوایز بیشتری دریافت کنید!
+""")}
+
+referral_update = {
+    "en": Template("""
+
+Success! Your credits have been applied.
+Enjoy your new features and keep sharing your referral link to unlock even more rewards!
+"""),
+    "fa": Template("""
+پیام: "موفقیت! امتیازهای شما اعمال شدند.
+از ویژگی‌های جدید خود لذت ببرید و لینک ارجاع خود را به اشتراک بگذارید تا جوایز بیشتری کسب کنید!
+""")}
+
+exchange_referrals_4o_mini = {
+    "en": Template("""
+
+You've successfully exchanged 5 referrals for GPT 4.0 Mini credits!
+Enjoy your new features and continue sharing your referral link to unlock even more rewards.
+"""),
+    "fa": Template("""
+شما با موفقیت ۵ ارجاع را برای دریافت اعتبار GPT 4.0 Mini مبادله کرده‌اید!
+از ویژگی‌های جدید خود لذت ببرید و با اشتراک‌گذاری لینک ارجاع خود، جوایز بیشتری کسب کنید.
+""")}
+
+exchange_referrals_voice_model = {
+    "en": Template("""
+
+You've successfully exchanged 5 referrals with 10 voice model credits!
+Enjoy your new features and continue sharing your referral link to unlock even more rewards.
+"""),
+    "fa": Template("""شما با موفقیت ۵ ارجاع را با ۱۰ اعتبار مدل صوتی مبادله کرده‌اید!
+    از ویژگی‌های جدید خود لذت ببرید و با اشتراک‌گذاری لینک ارجاع خود، جوایز بیشتری کسب کنید.
+
+""")}
+
+exchange_referrals_image_model = {
+    "en": Template("""
+
+You've successfully exchanged 5 referrals with 10 image model credits!
+Enjoy your new features and continue sharing your referral link to unlock even more rewards.
+"""),
+    "fa": Template("""شما با موفقیت ۵ ارجاع را با ۱۰ اعتبار مدل تصویری مبادله کرده‌اید!
+    از ویژگی‌های جدید خود لذت ببرید و با اشتراک‌گذاری لینک ارجاع خود، جوایز بیشتری کسب کنید.
+
+""")}
+
+reply_text_after_canceling = {
+    "en": Template("""
+
+You can continue to ask me questions now.
+"""),
+    "fa": Template("""
+    اکنون می‌توانید به پرسیدن سوالات خود ادامه دهید.
+
+""")}

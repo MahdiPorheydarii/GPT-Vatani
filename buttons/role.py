@@ -2,8 +2,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import time
 from db.MySqlConn import Mysql
-
-from buttons.templates import role, context_info, identity_confirmed
+from buttons.templates import role, context_info, identity_confirmed, reply_text_after_canceling
 from config import (
     create_reply_keyboard,
     cancel_markup,
@@ -45,7 +44,7 @@ async def set_system_content_handler(update: Update, context: ContextTypes.DEFAU
     system_content = update.message.text.strip()
     if system_content in ("cancel", "reset"):
         await update.message.reply_text(
-            text="Cancelled. \nYou can continue to ask me questions now.",
+            text=reply_text_after_canceling[user['lang']],
             reply_markup=create_reply_keyboard(user["lang"]), parse_mode='Markdown')
     else:
         user_id = update.effective_user.id

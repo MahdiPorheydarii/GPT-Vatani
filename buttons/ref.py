@@ -1,5 +1,7 @@
 import random
 import string
+from buttons.templates import referral_limit,referral_update,give_referral_link
+from buttons.templates import exchange_referrals_4o_mini, exchange_referrals_voice_model,exchange_referrals_image_model
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
 from db.MySqlConn import Mysql
@@ -30,19 +32,22 @@ async def show_referral_info(update: Update, context: CallbackContext):
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    reply_text = (f"Your referral link: {referral_link}\n"
-                  f"Referrals: {referral_count}\n")
+    reply_text = give_referral_link[user['lang']]
     await update.message.reply_text(reply_text, disable_web_page_preview=True, reply_markup=reply_markup)
     mysql.end()
 
 async def exchange(update : Update, context : CallbackContext):
     query = update.callback_query
     await query.answer()
+    user_id = update.effective_user.id
+    mysql = Mysql()
+    user = mysql.getOne("select * from users where user_id=%s", [user_id])
+    mysql.end()
 
     keyboard = [
-        [InlineKeyboardButton("Exchange 5 refs with 50 GPT 4o mini credits", callback_data='exc_gpt')],
-        [InlineKeyboardButton("Exchange 5 refs with 10 voice model credits", callback_data='exc_voice')],
-        [InlineKeyboardButton("Exchange 5 refs with 10 image model credits", callback_data='exc_im')],
+        [InlineKeyboardButton(exchange_referrals_4o_mini[user['lang']], callback_data='exc_gpt')],
+        [InlineKeyboardButton(exchange_referrals_voice_model[user['lang']], callback_data='exc_voice')],
+        [InlineKeyboardButton(exchange_referrals_image_model[user['lang']], callback_data='exc_im')],
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -58,9 +63,7 @@ async def exchange_handler(update : Update, context : CallbackContext):
     refs = user.get('ref_count')
 
     if refs < 5:
-        reply = """
-                    you do not have enough referrals to exchange.
-                """
+        reply = referral_limit[user["lang"]]
         await query.edit_message_text(reply)
         mysql.end()
         return
@@ -72,5 +75,5 @@ async def exchange_handler(update : Update, context : CallbackContext):
             mysql.update("Update users set voice = voice+10 where user_id=%s", [user_id])
         elif query.data == "exc_im":
             mysql.update("Update users set pic = pic+10 where user_id=%s", [user_id])
-        await query.edit_message_text("Your credits have been applied! check Statistics.")
+        await query.edit_message_text(referral_update[user['lang']])
         mysql.end()

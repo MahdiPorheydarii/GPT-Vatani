@@ -45,7 +45,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         reply = f" محدودیت استفاده رایگان😶‍🌫" \
             f"شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید. \n"\
             f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
-            f" اگر سوالی دارید، می‌توانید با پشتیبانی تماس بگیرید.\n"
+            f" اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.\n"
         await update.message.reply_text(reply, reply_markup=create_reply_keyboard(logged_in_user["lang"]))
         mysql.end()
         return CHOOSING
@@ -85,7 +85,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     answer = token_limit[user_checkin["lang"]].safe_substitute(answer=answer, max_token=1500)
                     parse_mode = "Markdown"
                 elif status == "content_filter":
-                    answer = f"{answer}\n\nAs an AI assistant, please ask me appropriate questions!！\nPlease contact @MahdiPorheydari for more help!" \
+                    answer = f"{answer}\n\nAs an AI assistant, please ask me appropriate questions!！\nPlease contact @MyGPT_PR for more help!" \
                              f"{emoji.emojize(':check_mark_button:')}"
                 await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id,
                                                     message_id=placeholder_message.message_id,
