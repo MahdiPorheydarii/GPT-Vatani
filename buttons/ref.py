@@ -32,7 +32,7 @@ async def show_referral_info(update: Update, context: CallbackContext):
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    reply_text = give_referral_link[user['lang']]
+    reply_text = give_referral_link[user['lang']].safe_substitute(referral_link=referral_link, referral_count=referral_count)
     await update.message.reply_text(reply_text, disable_web_page_preview=True, reply_markup=reply_markup)
     mysql.end()
 

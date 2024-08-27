@@ -109,13 +109,13 @@ $answer
 
 give_referral_link = {
     "en": Template("""
-Here's your unique referral link: ${referral_link}. Share it with friends to earn rewards!
+Here's your unique referral link: $referral_link. Share it with friends to earn rewards!
 Every successful referral brings you closer to unlocking special features\n
-Referrals count: ${referral_count}
+Referrals count: $referral_count
 """),
-    "fa": Template("""این لینک ارجاع منحصربه‌فرد شماست: ${referral_link}. آن را با دوستان خود به اشتراک بگذارید تا جوایز دریافت کنید!
+    "fa": Template("""این لینک ارجاع منحصربه‌فرد شماست: $referral_link. آن را با دوستان خود به اشتراک بگذارید تا جوایز دریافت کنید!
 هر ارجاع موفقیت‌آمیز شما را به باز کردن ویژگی‌های ویژه نزدیک‌تر می‌کند\n
-تعداد ارجاع : ${referral_count}
+تعداد ارجاع : $referral_count
 """)
 }
 
@@ -186,3 +186,37 @@ You can continue to ask me questions now.
     اکنون می‌توانید به پرسیدن سوالات خود ادامه دهید.
 
 """)}
+
+text_to_image = {
+    "en": Template("""
+
+Please provide the text you'd like to use for creating an image.
+"""),
+    "fa": Template("""
+    لطفاً متنی که می‌خواهید برای ساخت تصویر استفاده کنید را ارسال کنید.
+
+""")}
+
+failed_to_generate_image = {
+    
+    "en": Template("""
+
+Failed to generate the image. Please try again.
+"""),
+    "fa": Template("""
+    ایجاد تصویر با شکست مواجه شد. لطفاً دوباره تلاش کنید.
+    
+
+""")}
+
+valid_text_to_img = {
+    
+    "en": Template("""
+    Please send a valid text prompt.
+
+"""),
+    "fa": Template("""
+    لطفاً یک متن معتبر برای درخواست ارسال کنید.
+
+""")}
+

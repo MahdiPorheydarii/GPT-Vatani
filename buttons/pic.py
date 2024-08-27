@@ -4,6 +4,7 @@ from telegram.ext import ContextTypes
 from config import config, create_reply_keyboard, TYPING_TEXT_FOR_IMAGE, CHOOSING
 import asyncio
 from db.MySqlConn import Mysql
+from buttons.templates import text_to_image,failed_to_generate_image,valid_text_to_img
 
 API_KEY = config['PIC_API_KEY']
 
@@ -12,7 +13,7 @@ async def handle_text_to_pic(update: Update, context: ContextTypes.DEFAULT_TYPE)
     user = mysql.getOne("select * from users where user_id=%s", update.effective_user.id)
     mysql.end()
 
-    await update.message.reply_text('Please send the text to make a image of it.', reply_markup=create_reply_keyboard(user.get('lang')))
+    await update.message.reply_text(text_to_image[user['lang']], reply_markup=create_reply_keyboard(user.get('lang')))
     
     return TYPING_TEXT_FOR_IMAGE
 async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -65,9 +66,9 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     else:
                         await asyncio.sleep(0.5)
             else:
-                await update.message.reply_text("Failed to generate the image. Please try again.", reply_markup=create_reply_keyboard(user.get('lang')))
+                await update.message.reply_text(failed_to_generate_image[user['lang']], reply_markup=create_reply_keyboard(user.get('lang')))
                 return CHOOSING
     else:
-        await update.message.reply_text("Please send a valid text prompt.", reply_markup=create_reply_keyboard(user.get('lang')))
+        await update.message.reply_text(valid_text_to_img[user['lang']], reply_markup=create_reply_keyboard(user.get('lang')))
     print("Ret"*100)
     return CHOOSING
