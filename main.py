@@ -60,6 +60,7 @@ def main() -> None:
                 MessageHandler(filters.Regex(f'^({en_labels["subscription_button"]}|{fa_labels["subscription_button"]})$'), show_subscription_options),
                 MessageHandler(filters.Regex(f'^({en_labels["ref_button"]}|{fa_labels["ref_button"]})$'), show_referral_info),
                 MessageHandler(filters.TEXT & ~filters.COMMAND, answer_handler),
+                MessageHandler(filters.VOICE, answer_handler),
             ],
             TYPING_REPLY: [
                 MessageHandler(filters.Regex(f'^({en_labels["contact_admin"]}|{fa_labels["contact_admin"]})$'), helper),

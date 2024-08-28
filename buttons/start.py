@@ -32,6 +32,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         mysql.update("update users set nick_name=%s where user_id=%s", (nick_name, user_id))
     mysql.end()
 
-    user = update.effective_user
-    await show_languages(update, context)
+    if user_checkin:
+            await update.message.reply_html(
+        rf"""Hey  {user.mention_html()}!
+I'm an AI chatbot created to interact with you and make your day a little brighter. If you have any questions or just want to have a friendly chat, I'm here to help! 🤗
+Do you know what's great about me? I can help you with anything from giving advice to telling you a joke, and I'm available 24/7! 🕰️
+        """ if user_checkin.get('lang') == 'en' else 
+        rf"""سلام {user.mention_html()}!
+من یک ربات چت هوش مصنوعی هستم که برای تعامل با شما و روشن کردن روزتان ایجاد شده است. اگر سوالی دارید یا فقط می خواهید یک چت دوستانه داشته باشید، من اینجا هستم تا کمک کنم! 🤗
+آیا می دانید چه چیزی در مورد من عالی است؟ من می توانم در هر کاری به شما کمک کنم، از نصیحت کردن تا گفتن یک جوک، و 24 ساعته در خدمت هستم! 🕰️
+        """,
+        reply_markup=create_reply_keyboard(user_checkin.get('lang')), disable_web_page_preview=True
+    )
+    else:
+        await show_languages(update, context)
     return CHOOSING

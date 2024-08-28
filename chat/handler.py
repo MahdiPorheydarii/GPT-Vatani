@@ -1,14 +1,14 @@
 from telegram import Update
-from telegram.constants import ParseMode
 from telegram.ext import ContextTypes
 from telegram.error import BadRequest
 import asyncio
 import re
-
+import ast
 from chat.ai import ChatCompletionsAI
 import time
 import emoji
-
+from openai import OpenAI
+from config import config
 from db.MySqlConn import Mysql
 from buttons.templates import token_limit
 from config import (
@@ -20,7 +20,6 @@ from config import (
 
 async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user = update.effective_user
-    prompt = update.message.text
     user_id = user.id
     nick_name = user.full_name
     mysql = Mysql()
@@ -49,6 +48,34 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await update.message.reply_text(reply, reply_markup=create_reply_keyboard(logged_in_user["lang"]))
         mysql.end()
         return CHOOSING
+
+    if update.message.voice:
+        file = update.message.voice
+        if file.duration > 60:
+                reply = f"حداکثر مدت زمان فایل صوتی برای کاربر معمولی 60 ثانیه است.\n" \
+                        f"برای استفاده از این بخش، مدت زمان فایل خود را کاهش دهید یا اشتراک تهیه کنید.\n" \
+                        f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
+                        f" اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.\n"                
+                await update.message.reply_text(reply, parse_mode="HTML", reply_markup=create_reply_keyboard(user['lang']))       
+
+        elif file:
+            file_path = await file.get_file()
+            path = ast.literal_eval(file_path.to_json())
+
+            client = OpenAI(api_key=config['AI']['TOKEN'])
+
+            await file_path.download_to_drive()
+            print(path['file_path'][path['file_path'].index('ice/')+4:])
+            audio_file= open(path['file_path'][path['file_path'].index('ice/')+4:], "rb")
+
+            transcription = client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file
+            )
+
+            prompt = transcription.text
+    elif update.message.text:
+        prompt = update.message.text
 
     placeholder_message = await update.message.reply_text("ㅤ")
     records = mysql.getMany(f"select * from records where user_id={user_id} and role='user' and reset_at is null order by id desc",

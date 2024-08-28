@@ -189,34 +189,28 @@ You can continue to ask me questions now.
 
 text_to_image = {
     "en": Template("""
-
 Please provide the text you'd like to use for creating an image.
 """),
     "fa": Template("""
     لطفاً متنی که می‌خواهید برای ساخت تصویر استفاده کنید را ارسال کنید.
-
 """)}
 
 failed_to_generate_image = {
     
     "en": Template("""
-
 Failed to generate the image. Please try again.
 """),
     "fa": Template("""
-    ایجاد تصویر با شکست مواجه شد. لطفاً دوباره تلاش کنید.
-    
-
+ایجاد تصویر با شکست مواجه شد. لطفاً دوباره تلاش کنید.
 """)}
 
 valid_text_to_img = {
     
-    "en": Template("""
-    Please send a valid text prompt.
-
-"""),
-    "fa": Template("""
-    لطفاً یک متن معتبر برای درخواست ارسال کنید.
-
-""")}
+    "en": """
+Please send a valid text prompt.
+    """,
+    "fa": """
+لطفاً یک متن معتبر برای درخواست ارسال کنید.
+    """
+}
 
