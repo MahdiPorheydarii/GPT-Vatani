@@ -36,15 +36,15 @@ In case you want to stop this setting, just reply: `cancel`‍🤝‍
 در صورت تمایل به لغو این تنظیمات، فقط پاسخ دهید: `cancel` ‍🤝‍
 """)}
 
-context_info = {"en": Template("""
+context_info = {"en": """
 Each time you ask a question, the AI will provide an answer considering your recent conversations, untill it restarts!
 
 Your conversation history has now been cleared, and you can start asking questions again!
-"""), "fa": Template("""
+""", "fa": """
 هر بار که سوالی بپرسید، هوش مصنوعی با در نظر گرفتن آخرین مکالمات شما به شما پاسخ خواهد داد، تا زمانی که آن‌را ریست کنید!
 
 تاریخچه مکالمات شما اکنون پاک شده است و می‌توانید دوباره شروع به پرسش کنید!
-""")}
+"""}
 
 identity_confirmed = {"en": """
 The new AI assistant identity has been confirmed.

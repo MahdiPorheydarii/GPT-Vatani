@@ -33,15 +33,5 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     mysql.end()
 
     user = update.effective_user
-    # await show_languages(update, ContextTypes.DEFAULT_TYPE)
-    await update.message.reply_html(
-        rf"""
-        Hey  {user.mention_html()}!
-I'm an AI chatbot created to interact with you and make your day a little brighter. If you have any questions or just want to have a friendly chat, I'm here to help! 🤗
-
-Do you know what's great about me? I can help you with anything from giving advice to telling you a joke, and I'm available 24/7! 🕰️
-        """,
-        reply_markup=create_reply_keyboard('en'), disable_web_page_preview=True
-    )
     await show_languages(update, context)
     return CHOOSING
