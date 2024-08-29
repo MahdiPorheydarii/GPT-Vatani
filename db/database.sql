@@ -28,3 +28,12 @@ CREATE TABLE `records` (
   `reset_at` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1974 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `group_chats` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `group_id` varchar(63) DEFAULT NULL,
+  `members` smallint DEFAULT NULL,
+  'cnt' smallint DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2048 DEFAULT CHARSET=utf8mb4;

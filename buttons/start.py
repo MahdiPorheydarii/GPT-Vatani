@@ -47,3 +47,27 @@ Do you know what's great about me? I can help you with anything from giving advi
     else:
         await show_languages(update, context)
     return CHOOSING
+
+async def start_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    mysql = Mysql()
+    chat = update.effective_chat
+    chat_info = await context.bot.get_chat(chat.id)
+    member_count = await chat_info.get_member_count()
+    
+
+    group_checkin = mysql.getOne(f"select * from group_chats where group_id={chat_info.id}")
+    if not group_checkin:
+        date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        sql = "insert into group_chats (group_id, members, created_at) values (%s, %s, %s)"
+        value = [chat_info.id, member_count, date_time]
+        mysql.insertOne(sql, value)
+    if group_checkin and group_checkin.get("members") != member_count:
+        mysql.update("update group_chats set members=%s where group_id=%s", (member_count, chat_info.id))
+    mysql.end()
+
+    await update.message.reply_text(
+        rf"""Hey! to use this bot, use the command /prompt following by your prompt.
+        سلام!
+        برای استفاده از این ربات، از دستور /prompt و سپس سوال خود استفاده کنید.
+        """,
+    )

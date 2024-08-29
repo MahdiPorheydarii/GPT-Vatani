@@ -1,5 +1,5 @@
 from telegram import Update
-from telegram.ext import ContextTypes
+from telegram.ext import ContextTypes, CallbackContext
 from telegram.error import BadRequest
 import asyncio
 import re
@@ -18,11 +18,69 @@ from config import (
     config)
 
 
+async def group_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print("here")
+    mysql = Mysql()
+    print(update.effective_chat.id)
+    group_checkin = mysql.getOne(f"select * from group_chats where group_id={update.effective_chat.id}")
+    if not group_checkin:
+        await update.message.reply_text("Please use /start first")
+        return CHOOSING
+    text = ' '.join(context.args)
+    if text == ' ' or text == '':
+        await update.message.reply_text("please enter your prompt after /prompt in the same message")
+        return CHOOSING
+    # if group_checkin.get('members') < 10:
+        # await update.message.reply_text("This feature is for group chats with 10+ members!")
+        # return CHOOSING
+    messages = []
+    messages.append({"role": "user", "content": text})
+    prompt_tokens = count_tokens(text)
+    replies = ChatCompletionsAI({'sub': 0}, messages)
+    prev_answer = ""
+    index = 0
+    answer = ""
+    placeholder_message = await update.message.reply_text("ㅤ")
+    async for reply in replies:
+        index += 1
+        answer, status = reply
+        if abs(count_tokens(answer) - count_tokens(prev_answer)) < 30 and status is None:
+            continue
+        prev_answer = answer
+        try:
+            if status == "length":
+                answer = token_limit['en'].safe_substitute(answer=answer, max_token=1500)
+            elif status == "content_filter":
+                answer = f"{answer}\n\nAs an AI assistant, please ask me appropriate questions!！\nPlease contact @MyGPT_PR for more help!" \
+                            f"{emoji.emojize(':check_mark_button:')}"
+            await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id,
+                                                message_id=placeholder_message.message_id,
+                                                parse_mode="Markdown", disable_web_page_preview=True)
+        except BadRequest as e:
+            if str(e).startswith("Message is not modified"):
+                continue
+            else:
+                await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id,
+                                                    message_id=placeholder_message.message_id)
+        await asyncio.sleep(0.01)
+
+    date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    sql = "insert into records (user_id, role, content, created_at, tokens) " \
+            "values (%s, %s, %s, %s, %s)"
+    value = [update.effective_chat.id, "user_group", text, date_time, prompt_tokens]
+    mysql.insertOne(sql, value)
+    mysql.update(f"update group_chats set cnt=cnt+1 where group_id={update.effective_chat.id};")
+    value = [update.effective_chat.id, 'assistant', answer, date_time, count_tokens(answer)]
+    mysql.insertOne(sql, value)
+    mysql.end()
+    return CHOOSING
+
 async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user = update.effective_user
     user_id = user.id
     nick_name = user.full_name
     attach = None
+    attach_url = None
     mysql = Mysql()
 
     user_checkin = mysql.getOne(f"select * from users where user_id={user_id}")
