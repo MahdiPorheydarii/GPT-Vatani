@@ -327,6 +327,23 @@ If you have any questions, you can contact support at @MyGPT_PR.
 اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.
 """)
 }
+appropriate_question = {
+    "en": Template("""
+$answer
+
+As an AI assistant, please ask me appropriate questions!
+For more help, please contact @MyGPT_PR ✔️)
+"""),
+
+    "fa": Template("""
+$answer
+
+به عنوان یک دستیار هوش مصنوعی، لطفاً سوالات مناسب بپرسید!
+برای کمک بیشتر، لطفاً با @MyGPT_PR تماس بگیرید.✔️)
+""")
+}
+
+
 
 
 
