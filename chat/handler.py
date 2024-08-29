@@ -8,20 +8,21 @@ from chat.ai import ChatCompletionsAI
 import time
 import emoji
 from openai import OpenAI
-from config import config
 from db.MySqlConn import Mysql
 from buttons.templates import token_limit
 from config import (
     create_reply_keyboard,
     CHOOSING,
     time_span,
-    notification_channel)
+    notification_channel,
+    config)
 
 
 async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user = update.effective_user
     user_id = user.id
     nick_name = user.full_name
+    attach = None
     mysql = Mysql()
 
     user_checkin = mysql.getOne(f"select * from users where user_id={user_id}")
@@ -75,11 +76,27 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
             prompt = transcription.text
     elif update.message.text:
+        print("text")
         prompt = update.message.text
+
+    elif update.message.photo[-1]:
+        attach = update.message.photo[-1]
+        attach_id = attach.file_id
+
+        attach_file = await context.bot.get_file(attach_id)
+    
+        attach_url = attach_file.file_path
+
+        prompt = update.message.caption
+
+        if not prompt:
+            await update.message.reply_text("""Please enter a valid caption!""", reply_markup=create_reply_keyboard(user['lang']))
+            return CHOOSING     
 
     placeholder_message = await update.message.reply_text("ㅤ")
     records = mysql.getMany(f"select * from records where user_id={user_id} and role='user' and reset_at is null order by id desc",
-                            3)
+                            2)
+
     if update.message:
         messages = []
         prompt_tokens = 0
@@ -91,7 +108,16 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         if logged_in_user["system_content"]:
             messages.insert(0, {"role": "system", "content": logged_in_user["system_content"]})
             prompt_tokens += count_tokens(logged_in_user["system_content"])
-        messages.append({"role": "user", "content": prompt})
+        if attach:
+            messages.append(
+                {"role": "user", "content": [
+                    {'type': 'text', 'text': prompt},
+                    {'type': 'image_url', 'image_url': {'url': attach_url}}
+                    ]
+                })
+            print(messages)
+        else:
+            messages.append({"role": "user", "content": prompt})
         prompt_tokens += count_tokens(prompt)
 
         replies = ChatCompletionsAI(logged_in_user, messages)
@@ -126,6 +152,8 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             await asyncio.sleep(0.01)  # wait a bit to avoid flooding
 
         date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        if attach_url:
+            prompt += '-attachment : '+attach_url
         sql = "insert into records (user_id, role, content, created_at, tokens) " \
               "values (%s, %s, %s, %s, %s)"
         value = [user_id, "user", prompt, date_time, prompt_tokens]

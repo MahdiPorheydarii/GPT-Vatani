@@ -6,8 +6,7 @@ OPENAI_CHAT_COMPLETION_OPTIONS = {
     "top_p": 1,
     "frequency_penalty": 0,
     "presence_penalty": 0,
-    "stream": True,
-    "stop": None,
+    "stream": True
 }
 
 
