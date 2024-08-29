@@ -1,4 +1,6 @@
-FROM python:3.11-slim
+FROM ubuntu
+
+RUN apt-get install -y python nano mysql
 
 WORKDIR /app
 

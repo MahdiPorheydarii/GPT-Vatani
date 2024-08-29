@@ -8,13 +8,13 @@ CREATE TABLE `users` (
   `user_id` bigint DEFAULT NULL,
   `system_content` varchar(1024) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  'lang', varchar DEFAULT NULL,
-  'gpt', smallint DEFAULT 0,
-  'voice', smallint DEFAULT 0,
-  'pic', smallint DEFAULT 0,
-  'sub', smallint DEFAULT 0,
-  'ref_link', varchar(128) DEFAULT NULL,
-  'ref_count', smallint DEFAULT 0,
+  `lang` varchar(4) DEFAULT NULL,
+  `gpt` tinyint DEFAULT 0,
+  `voice` tinyint DEFAULT 0,
+  `pic` tinyint DEFAULT 0,
+  `sub` tinyint DEFAULT 0,
+  `ref_link` varchar(128) DEFAULT NULL,
+  `ref_count` tinyint DEFAULT 0,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4;
 
@@ -32,8 +32,8 @@ CREATE TABLE `records` (
 CREATE TABLE `group_chats` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `group_id` varchar(63) DEFAULT NULL,
-  `members` smallint DEFAULT NULL,
-  'cnt' smallint DEFAULT 0,
+  `members` tinyint DEFAULT NULL,
+  `cnt` tinyint DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2048 DEFAULT CHARSET=utf8mb4;
