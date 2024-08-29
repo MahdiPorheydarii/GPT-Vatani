@@ -9,7 +9,7 @@ import time
 import emoji
 from openai import OpenAI
 from db.MySqlConn import Mysql
-from buttons.templates import token_limit
+from buttons.templates import token_limit,voice_min_limit,voice_text_count_limit,appropriate_question
 from config import (
     create_reply_keyboard,
     CHOOSING,
@@ -100,10 +100,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     chat_count = mysql.getOne(
         f"select count(*) as count from records where role='user' and user_id = {user_id} and created_at >=NOW() - INTERVAL {time_span} MINUTE;")
     if chat_count.get("count") > 2 and logged_in_user.get('gpt') < 1:
-        reply = f" محدودیت استفاده رایگان😶‍🌫" \
-            f"شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید. \n"\
-            f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
-            f" اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.\n"
+        reply = voice_text_count_limit[user['lang']]
         await update.message.reply_text(reply, reply_markup=create_reply_keyboard(logged_in_user["lang"]))
         mysql.end()
         return CHOOSING
@@ -111,10 +108,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if update.message.voice:
         file = update.message.voice
         if file.duration > 60:
-                reply = f"حداکثر مدت زمان فایل صوتی برای کاربر معمولی 60 ثانیه است.\n" \
-                        f"برای استفاده از این بخش، مدت زمان فایل خود را کاهش دهید یا اشتراک تهیه کنید.\n" \
-                        f"[خرید اشتراک](https://Zarinp.al/MyGPT)"\
-                        f" اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.\n"                
+                reply = voice_min_limit[user['lang']]              
                 await update.message.reply_text(reply, parse_mode="HTML", reply_markup=create_reply_keyboard(user['lang']))       
 
         elif file:
@@ -196,8 +190,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     answer = token_limit[user_checkin["lang"]].safe_substitute(answer=answer, max_token=1500)
                     parse_mode = "Markdown"
                 elif status == "content_filter":
-                    answer = f"{answer}\n\nAs an AI assistant, please ask me appropriate questions!！\nPlease contact @MyGPT_PR for more help!" \
-                             f"{emoji.emojize(':check_mark_button:')}"
+                    answer = appropriate_question[user['lang']]
                 await context.bot.edit_message_text(answer, chat_id=placeholder_message.chat_id,
                                                     message_id=placeholder_message.message_id,
                                                     parse_mode="Markdown", disable_web_page_preview=True)
