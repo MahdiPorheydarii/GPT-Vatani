@@ -206,11 +206,133 @@ Failed to generate the image. Please try again.
 
 valid_text_to_img = {
     
-    "en": """
+    "en": Template("""
 Please send a valid text prompt.
-    """,
-    "fa": """
+    """),
+    "fa":Template( """
 لطفاً یک متن معتبر برای درخواست ارسال کنید.
-    """
+    """)
 }
+voice_back_respond = {
+    
+    "en": Template("""
+Back to the main menu
+"""),
+    "fa": Template("""
+بازگشت به منوی اصلی
+""")
+}
+
+voice_tts_respond = {
+
+    "en": Template("""
+Please enter the text you want to convert to speech.
+"""),
+    "fa": Template("""
+"لطفاً متنی که می‌خواهید به گفتار تبدیل شود را وارد کنید""")
+
+}
+voice_reply_text = {
+
+    "en": Template("""
+Please choose one option:
+"""),
+    "fa": Template("""
+لطفاً یکی از گزینه ها را انتخاب کنید""")
+
+}
+
+handle_speech_to_text = {
+
+    "en": Template("""
+Please send an audio file to transcribe.
+"""),
+    "fa": Template("""
+    لطفاً یک فایل صوتی برای تبدیل به متن ارسال کنید""")
+
+}
+voice_text_count_limit = {
+    "en": Template("""
+Free usage limit reached😶‍🌫
+You have reached the limit of 3 free uses of the bot. To continue using the services, please purchase one of our subscriptions.
+[Purchase Subscription](https://Zarinp.al/MyGPT)
+If you have any questions, you can contact support at @MyGPT_PR.
+"""),
+    "fa": Template("""
+محدودیت استفاده رایگان😶‍🌫
+شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید.
+[خرید اشتراک](https://Zarinp.al/MyGPT)
+اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.
+""")
+}
+
+voice_min_limit = {
+    "en": Template("""
+The maximum audio file duration for a regular user is 60 seconds.
+To use this feature, please reduce the duration of your file or purchase a subscription.
+[Purchase Subscription](https://Zarinp.al/MyGPT)
+If you have any questions, you can contact support at @MyGPT_PR.
+"""),
+
+    "fa": Template("""
+حداکثر مدت زمان فایل صوتی برای کاربر معمولی ۶۰ ثانیه است.
+برای استفاده از این بخش، مدت زمان فایل خود را کاهش دهید یا اشتراک تهیه کنید.
+[خرید اشتراک](https://Zarinp.al/MyGPT)
+اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.
+""")
+}
+error_transcribing_audio = {
+    
+
+    "en": Template("""
+Error transcribing audio: $transcript.error
+"""),
+    "fa": Template("""
+    خطا در تبدیل صدا به متن: $transcript_error""")
+
+}
+
+invalid_audio_file = {
+    
+
+    "en": Template("""
+Please send a valid audio file.
+"""),
+    "fa": Template("""
+    .لطفاً یک فایل صوتی معتبر ارسال کنید""")
+
+}
+handle_text_to_speech = {
+    
+
+    "en": Template("""
+Please enter the text you want to convert to speech.
+"""),
+    "fa": Template("""
+لطفایک متن برای تبدیل به فایل صوتی ارسال کنید.""")
+
+}
+text_min_limit = {
+    "en": Template("""
+The maximum number of characters for a regular user is 200.
+To use this feature, please reduce the number of characters in your message or purchase a subscription.
+[Purchase Subscription](https://Zarinp.al/MyGPT)
+If you have any questions, you can contact support at @MyGPT_PR.
+"""),
+    
+    "fa": Template("""
+حداکثر تعداد کاراکتر برای کاربر معمولی ۲۰۰ عدد است.
+برای استفاده از این بخش، تعداد کاراکتر پیام خود را کاهش دهید یا اشتراک تهیه کنید.
+[خرید اشتراک](https://Zarinp.al/MyGPT)
+اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.
+""")
+}
+
+
+
+
+
+
+
+
 
