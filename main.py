@@ -23,7 +23,9 @@ from buttons.subscription import (
     show_payment_options,
     show_subscription_options,
     show_subscription_plans,
-    generate_payment_link
+    generate_payment_link,
+    gpt,
+    confirm_subscription
 )
 from buttons.language import show_languages, show_languages_callback_handle
 from buttons.help import helper
@@ -97,10 +99,12 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(cancel_chat_mode_handle, pattern="^cancel"))
     application.add_handler(CallbackQueryHandler(show_languages_callback_handle, pattern="^lang"))
     application.add_handler(CallbackQueryHandler(show_subscription_plans, pattern="^subscription_"))
-    application.add_handler(CallbackQueryHandler(show_payment_options, pattern="^plan_"))
+    application.add_handler(CallbackQueryHandler(gpt, pattern="^gpt_"))
     application.add_handler(CallbackQueryHandler(generate_payment_link, pattern="^pay_"))
     application.add_handler(CallbackQueryHandler(exchange_handler, pattern="^exc_"))
     application.add_handler(CallbackQueryHandler(exchange, pattern="^ex"))
+    application.add_handler(CallbackQueryHandler(show_payment_options, pattern="^plan_"))
+    application.add_handler(CallbackQueryHandler(confirm_subscription, pattern="^conf"))
 
     application.add_error_handler(error_handler)
 

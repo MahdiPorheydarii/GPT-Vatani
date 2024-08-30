@@ -31,9 +31,19 @@ CREATE TABLE `records` (
 
 CREATE TABLE `group_chats` (
   `ID` int NOT NULL AUTO_INCREMENT,
-  `group_id` varchar(63) DEFAULT NULL,
+  `group_id` varchar(31) DEFAULT NULL,
   `members` tinyint DEFAULT NULL,
   `cnt` tinyint DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2048 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `payments` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `user_id` bigint DEFAULT NULL,
+  `plan` tinyint DEFAULT NULL,
+  `price` tinyint DEFAULT 0,
+  `txn_id` varchar(63) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1024 DEFAULT CHARSET=utf8mb4;
