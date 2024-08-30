@@ -100,7 +100,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     chat_count = mysql.getOne(
         f"select count(*) as count from records where role='user' and user_id = {user_id} and created_at >=NOW() - INTERVAL {time_span} MINUTE;")
     if chat_count.get("count") > 2 and logged_in_user.get('gpt') < 1:
-        reply = voice_text_count_limit[user['lang']]
+        reply = voice_text_count_limit[user_checkin['lang']]
         await update.message.reply_text(reply, reply_markup=create_reply_keyboard(logged_in_user["lang"]))
         mysql.end()
         return CHOOSING

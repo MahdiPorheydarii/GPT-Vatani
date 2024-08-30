@@ -26,7 +26,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
         date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         sql = "insert into users (user_id, name, nick_name, system_content, created_at, voice, pic) values (%s, %s, %s, %s, %s, %s, %s)"
-        value = [user_id, user.username, nick_name, None, date_time, 3, 3]
+        value = [user_id, user.username, nick_name, None, date_time, 1.66, 3]
         mysql.insertOne(sql, value)
     if user_checkin and not user_checkin.get("nick_name"):
         mysql.update("update users set nick_name=%s where user_id=%s", (nick_name, user_id))

@@ -182,9 +182,11 @@ You can continue to ask me questions now.
 text_to_image = {
     "en": """
 Please provide the text you'd like to use for creating an image.
+Please only describe in English.
 """,
     "fa": """
     لطفاً متنی که می‌خواهید برای ساخت تصویر استفاده کنید را ارسال کنید.
+    لطفا توضیحات رو انگلیسی بگید.
 """}
 
 failed_to_generate_image = {
