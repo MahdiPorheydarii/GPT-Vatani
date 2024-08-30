@@ -11,7 +11,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Log in to Docker Hub
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PW }}
+      run: docker login -u mahdiporheydari -p ${{ secrets.DOCKER_PW }}
 
     - name: Darkube-cli build
       run: |
