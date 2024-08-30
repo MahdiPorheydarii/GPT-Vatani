@@ -33,6 +33,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     mysql.end()
 
     if user_checkin:
+            context.user_data['lang'] = user_checkin.get('lang')
             await update.message.reply_html(
         rf"""Hey  {user.mention_html()}!
 I'm an AI chatbot created to interact with you and make your day a little brighter. If you have any questions or just want to have a friendly chat, I'm here to help! 🤗

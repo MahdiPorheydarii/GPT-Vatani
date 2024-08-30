@@ -26,12 +26,11 @@ async def show_languages_callback_handle(update: Update, context: ContextTypes.D
     await query.answer()
     user = update.effective_user
     lang = query.data.split("_")[1]
-    
+    context.user_data['lang'] = lang
     mysql = Mysql()
     mysql.update("update users set nick_name=%s, lang=%s where user_id=%s", (nick_name, lang, user_id))
     mysql.end()
 
-    reply_markup = create_reply_keyboard(lang)
     confirmation_text = "Language changed to 🇬🇧 English\n" if lang == "en" else "زبان به فارسی 🇮🇷 تغییر کرد"
     await query.edit_message_text(text=confirmation_text)
     await query.message.reply_html(

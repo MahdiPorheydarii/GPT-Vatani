@@ -61,9 +61,10 @@ Hi $user!
 
 Your current Credit is as follows:
 
-GPT-4o mini: $gpt Tokens
+GPT model: $gpt Tokens
+    model: $model
 Image Model: $image Tokens
-Voice Model: $voice Tokens
+Voice Model: $voice Minutes
 
 Have a nice day!🎉
 """), "fa": Template("""
@@ -71,7 +72,8 @@ Have a nice day!🎉
 
 وضعیت فعلی اعتبار شما شما به شرح زیر است:
 
-GPT-4o mini: $gpt توکن
+مدل GPT: $gpt توکن
+    نوع مدل: $model
 مدل تصویری: $image توکن
 مدل صوتی: $voice توکن
 
@@ -98,15 +100,6 @@ $answer
 لطفاً با @MyGPT_PRبرای دریافت توکن‌های بیشتر تماس بگیرید! ✅
 """)}
 
-# generating = {
-#     "en": Template("""
-
-# """),
-#     "fa": Template("""
-# درحال دریافت پاسخ.
-# """)}
-
-
 give_referral_link = {
     "en": Template("""
 Here's your unique referral link: $referral_link. Share it with friends to earn rewards!
@@ -123,163 +116,162 @@ Referrals count: $referral_count
 
 
 referral_limit = {
-    "en": Template("""
-
+    "en": """
 It looks like you don't have enough referrals to complete this exchange.
 You need more referrals to get the GPT Mini feature. Keep sharing your referral link to unlock more rewards!
-"""),
-    "fa": Template("""
+""",
+    "fa": """
 به نظر می‌رسد که شما تعداد کافی ارجاع برای این مبادله را ندارید.
 شما به ارجاع بیشتر نیاز دارید تا ویژگی GPT Mini را فعال کنید. لینک ارجاع خود را بیشتر به اشتراک بگذارید تا جوایز بیشتری دریافت کنید!
-""")}
+"""}
 
 referral_update = {
-    "en": Template("""
+    "en": """
 
 Success! Your credits have been applied.
 Enjoy your new features and keep sharing your referral link to unlock even more rewards!
-"""),
-    "fa": Template("""
+""",
+    "fa": """
 پیام: "موفقیت! امتیازهای شما اعمال شدند.
 از ویژگی‌های جدید خود لذت ببرید و لینک ارجاع خود را به اشتراک بگذارید تا جوایز بیشتری کسب کنید!
-""")}
+"""}
 
 exchange_referrals_4o_mini = {
-    "en": Template("""
+    "en": """
 
-You've successfully exchanged 5 referrals for GPT 4.0 Mini credits!
+You've successfully exchanged 5 referrals for GPT 4o Mini credits!
 Enjoy your new features and continue sharing your referral link to unlock even more rewards.
-"""),
-    "fa": Template("""
-شما با موفقیت ۵ ارجاع را برای دریافت اعتبار GPT 4.0 Mini مبادله کرده‌اید!
+""",
+    "fa": """
+شما با موفقیت ۵ ارجاع را برای دریافت اعتبار GPT 4o Mini مبادله کرده‌اید!
 از ویژگی‌های جدید خود لذت ببرید و با اشتراک‌گذاری لینک ارجاع خود، جوایز بیشتری کسب کنید.
-""")}
+"""}
 
 exchange_referrals_voice_model = {
-    "en": Template("""
+    "en": """
 
 You've successfully exchanged 5 referrals with 10 voice model credits!
 Enjoy your new features and continue sharing your referral link to unlock even more rewards.
-"""),
-    "fa": Template("""شما با موفقیت ۵ ارجاع را با ۱۰ اعتبار مدل صوتی مبادله کرده‌اید!
+""",
+    "fa": """شما با موفقیت ۵ ارجاع را با ۱۰ اعتبار مدل صوتی مبادله کرده‌اید!
     از ویژگی‌های جدید خود لذت ببرید و با اشتراک‌گذاری لینک ارجاع خود، جوایز بیشتری کسب کنید.
 
-""")}
+"""}
 
 exchange_referrals_image_model = {
-    "en": Template("""
+    "en": """
 
 You've successfully exchanged 5 referrals with 10 image model credits!
 Enjoy your new features and continue sharing your referral link to unlock even more rewards.
-"""),
-    "fa": Template("""شما با موفقیت ۵ ارجاع را با ۱۰ اعتبار مدل تصویری مبادله کرده‌اید!
+""",
+    "fa": """شما با موفقیت ۵ ارجاع را با ۱۰ اعتبار مدل تصویری مبادله کرده‌اید!
     از ویژگی‌های جدید خود لذت ببرید و با اشتراک‌گذاری لینک ارجاع خود، جوایز بیشتری کسب کنید.
 
-""")}
+"""}
 
 reply_text_after_canceling = {
-    "en": Template("""
+    "en": """
 
 You can continue to ask me questions now.
-"""),
-    "fa": Template("""
+""",
+    "fa": """
     اکنون می‌توانید به پرسیدن سوالات خود ادامه دهید.
 
-""")}
+"""}
 
 text_to_image = {
-    "en": Template("""
+    "en": """
 Please provide the text you'd like to use for creating an image.
-"""),
-    "fa": Template("""
+""",
+    "fa": """
     لطفاً متنی که می‌خواهید برای ساخت تصویر استفاده کنید را ارسال کنید.
-""")}
+"""}
 
 failed_to_generate_image = {
     
-    "en": Template("""
+    "en": """
 Failed to generate the image. Please try again.
-"""),
-    "fa": Template("""
+""",
+    "fa": """
 ایجاد تصویر با شکست مواجه شد. لطفاً دوباره تلاش کنید.
-""")}
+"""}
 
 valid_text_to_img = {
     
-    "en": Template("""
+    "en": """
 Please send a valid text prompt.
-    """),
-    "fa":Template( """
+    """,
+    "fa": """
 لطفاً یک متن معتبر برای درخواست ارسال کنید.
-    """)
+    """
 }
 voice_back_respond = {
     
-    "en": Template("""
+    "en": """
 Back to the main menu
-"""),
-    "fa": Template("""
+""",
+    "fa": """
 بازگشت به منوی اصلی
-""")
+"""
 }
 
 voice_tts_respond = {
 
-    "en": Template("""
+    "en": """
 Please enter the text you want to convert to speech.
-"""),
-    "fa": Template("""
-"لطفاً متنی که می‌خواهید به گفتار تبدیل شود را وارد کنید""")
+""",
+    "fa": """
+"لطفاً متنی که می‌خواهید به گفتار تبدیل شود را وارد کنید"""
 
 }
 voice_reply_text = {
 
-    "en": Template("""
+    "en": """
 Please choose one option:
-"""),
-    "fa": Template("""
-لطفاً یکی از گزینه ها را انتخاب کنید""")
+""",
+    "fa": """
+لطفاً یکی از گزینه ها را انتخاب کنید"""
 
 }
 
-handle_speech_to_text = {
+handle_stt = {
 
-    "en": Template("""
+    "en": """
 Please send an audio file to transcribe.
-"""),
-    "fa": Template("""
-    لطفاً یک فایل صوتی برای تبدیل به متن ارسال کنید""")
+""",
+    "fa": """
+    لطفاً یک فایل صوتی برای تبدیل به متن ارسال کنید"""
 
 }
 voice_text_count_limit = {
-    "en": Template("""
+    "en": """
 Free usage limit reached😶‍🌫
 You have reached the limit of 3 free uses of the bot. To continue using the services, please purchase one of our subscriptions.
 [Purchase Subscription](https://Zarinp.al/MyGPT)
 If you have any questions, you can contact support at @MyGPT_PR.
-"""),
-    "fa": Template("""
+""",
+    "fa": """
 محدودیت استفاده رایگان😶‍🌫
 شما به حد مجاز ۳ بار استفاده رایگان از ربات رسیده‌اید. برای ادامه استفاده از خدمات، لطفاً یکی از اشتراک‌های ما را تهیه کنید.
 [خرید اشتراک](https://Zarinp.al/MyGPT)
 اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.
-""")
+"""
 }
 
 voice_min_limit = {
-    "en": Template("""
+    "en": """
 The maximum audio file duration for a regular user is 60 seconds.
 To use this feature, please reduce the duration of your file or purchase a subscription.
 [Purchase Subscription](https://Zarinp.al/MyGPT)
 If you have any questions, you can contact support at @MyGPT_PR.
-"""),
+""",
 
-    "fa": Template("""
+    "fa": """
 حداکثر مدت زمان فایل صوتی برای کاربر معمولی ۶۰ ثانیه است.
 برای استفاده از این بخش، مدت زمان فایل خود را کاهش دهید یا اشتراک تهیه کنید.
 [خرید اشتراک](https://Zarinp.al/MyGPT)
 اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.
-""")
+"""
 }
 error_transcribing_audio = {
     
@@ -295,21 +287,21 @@ Error transcribing audio: $transcript.error
 invalid_audio_file = {
     
 
-    "en": Template("""
+    "en": """
 Please send a valid audio file.
-"""),
-    "fa": Template("""
-    .لطفاً یک فایل صوتی معتبر ارسال کنید""")
+""",
+    "fa": """
+    .لطفاً یک فایل صوتی معتبر ارسال کنید"""
 
 }
 handle_text_to_speech = {
     
 
-    "en": Template("""
+    "en": """
 Please enter the text you want to convert to speech.
-"""),
-    "fa": Template("""
-لطفایک متن برای تبدیل به فایل صوتی ارسال کنید.""")
+""",
+    "fa": """
+لطفا یک متن برای تبدیل به فایل صوتی ارسال کنید."""
 
 }
 text_min_limit = {

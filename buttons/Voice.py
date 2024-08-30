@@ -6,8 +6,8 @@ from openai import OpenAI
 from config import config, CHOOSING, create_reply_keyboard, VOICE
 import ast
 from db.MySqlConn import Mysql
-from buttons.templates import voice_back_respond ,voice_tts_respond,voice_reply_text,handle_speech_to_text,handle_text_to_speech
-from buttons.templates import voice_text_count_limit,voice_min_limit,error_transcribing_audio,invalid_audio_file,text_min_limit
+from buttons.templates import *
+
 def percent(s):
     alphabet = 'abcdefghijklmnopqrstuvwxyz !@#$%?>.1234567890-=`'
     c = 0
@@ -26,18 +26,20 @@ async def handle_voice(update : Update, context : CallbackContext):
     user = mysql.getOne("select * from users where user_id=%s", [user_id])
     mysql.end()
 
-    if query.data == "voice_back":
-        await query.edit_message_text(voice_back_respond[user['lang']])
-        return CHOOSING
     if query.data == "voice_tts":
         await query.edit_message_text(text=voice_tts_respond[user['lang']])
         context.user_data['awaiting_prompt'] = True
-
         return VOICE
     if query.data == "voice_stt":
         await handle_speech_to_text(update, context)
         return VOICE
         
+
+async def choose(update: Update, context: CallbackContext):
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(voice_back_respond[context.user_data['lang']])
+    return CHOOSING
 
 async def voice_options(update: Update, context: CallbackContext):
     keyboard = [
@@ -46,7 +48,7 @@ async def voice_options(update: Update, context: CallbackContext):
             InlineKeyboardButton("Text to Speech", callback_data='voice_tts')
         ],
         [
-            InlineKeyboardButton("Back", callback_data='voice_back')
+            InlineKeyboardButton("Back", callback_data='vice_back')
         ]
     ]
     user_id = update.effective_user.id
@@ -66,7 +68,7 @@ async def handle_speech_to_text(update: Update, context: CallbackContext):
     user = mysql.getOne("select * from users where user_id=%s", [user_id])
     mysql.end()
 
-    await query.edit_message_text(text=handle_speech_to_text[user['lang']])
+    await query.edit_message_text(text=handle_stt[user['lang']])
 
     context.user_data['awaiting_audio'] = True
 
@@ -84,49 +86,45 @@ async def transcribe_audio(update: Update, context: CallbackContext):
         if chat_count.get('count') > 2 and user.get('voice') < 1:
             reply = voice_text_count_limit[user['lang']]
             await update.message.reply_text(reply, parse_mode="Markdown", reply_markup=create_reply_keyboard(user['lang']))
+            mysql.end()
             return CHOOSING
             
         file = update.message.voice or update.message.audio
-        if file.duration > 60 and user.get('voice') < 1:
+        duration = file.duration
+        if duration > 60 and user.get('voice') < 1:
                 reply = voice_min_limit[user['lang']]              
-                await update.message.reply_text(reply, parse_mode="HTML", reply_markup=create_reply_keyboard(user['lang']))       
+                await update.message.reply_text(reply, parse_mode="HTML", reply_markup=create_reply_keyboard(user['lang']))   
+                return CHOOSING    
 
         elif file:
+            if duration > user.get('voice') * 60 :
+                await update.message.reply_text("Not enough credits", parse_mode="HTML", reply_markup=create_reply_keyboard(user['lang'])) 
+                mysql.end()
+                return CHOOSING
             file_path = await file.get_file()
             path = ast.literal_eval(file_path.to_json())
-            print(path)
-            conf = aai.TranscriptionConfig(language_detection=True, speech_model=aai.SpeechModel.nano)
-            transcriber = aai.Transcriber(config=conf)
-            transcript = transcriber.transcribe(path['file_path'])
 
-            if transcript.status == aai.TranscriptStatus.error:
-                await update.message.reply_text(error_transcribing_audio[user['lang']], reply_markup=create_reply_keyboard(user['lang']))
-            else:
-                mysql.update("Update users set voice = %s where user_id=%s", [user.get('voice')-1, user_id])
-                if percent(transcript.text) > 0.8:
-                    res = transcript.text
-                else:
-                    client = OpenAI(api_key=config['AI']['TOKEN'])
-                    await file_path.download_to_drive()
-                    print(path['file_path'][path['file_path'].index('ice/')+4:],)
-                    audio_file= open(path['file_path'][path['file_path'].index('ice/')+4:], "rb")
-                    transcription = client.audio.transcriptions.create(
-                        model="whisper-1", 
-                        file=audio_file
-                    )
-                    res = transcription.text
-                date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                sql = "insert into records (user_id, role, content, created_at, tokens) " \
-                    "values (%s, %s, %s, %s, %s);"
-                value = [user_id, "user_voice", res, date_time, 0]
-                mysql.insertOne(sql, value)
-                cnt = user.get('voice')
-                mysql.update("Update users set voice = %s where user_id = %s", [cnt-1, user_id])
-                mysql.end()
-                await update.message.reply_text(f"{res}", reply_markup=create_reply_keyboard(user['lang']))
-
+            client = OpenAI(api_key=config['AI']['TOKEN'])
+            await file_path.download_to_drive()
+            print(path['file_path'][path['file_path'].index('ice/')+4:],)
+            audio_file= open(path['file_path'][path['file_path'].index('ice/')+4:], "rb")
+            transcription = client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file
+            )
+            res = transcription.text
+            date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+            sql = "insert into records (user_id, role, content, created_at, tokens) " \
+                "values (%s, %s, %s, %s, %s);"
+            value = [user_id, "user_voice", res, date_time, 0]
+            mysql.insertOne(sql, value)
+            await update.message.reply_text(f"{res}", reply_markup=create_reply_keyboard(user['lang']))
+            mysql.update("Update users set voice = %s where user_id=%s", [user.get('voice')-duration/60, user_id])
+            mysql.end()
+            return CHOOSING
         else:
             update.message.reply_text(invalid_audio_file[user['lang']], reply_markup=create_reply_keyboard(user['lang']))
+            return CHOOSING
 
 async def handle_text_to_speech(update: Update, context: CallbackContext):
     query = update.callback_query
@@ -158,7 +156,7 @@ async def tts(update: Update, context: CallbackContext):
         
         input_text = update.message.text
 
-        if len(input_text) > 200:
+        if len(input_text) > 200 and user.get('voice') < 1:
                 reply = text_min_limit[user['lang']]              
                 await update.message.reply_text(reply, parse_mode="HTML", reply_markup=create_reply_keyboard(user['lang']))
                 mysql.end()
@@ -170,9 +168,12 @@ async def tts(update: Update, context: CallbackContext):
                 model="tts-1",
                 voice="nova",
                 input=input_text,
+                speed=0.85
             )
             response.stream_to_file("output.ogg")
-            await update.message.reply_voice(voice=open("output.ogg", 'rb'))
+            duration = len(input_text.split(' ')) / 2.5
+    
+            await update.message.reply_voice("output.ogg")
             
             date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             sql = "insert into records (user_id, role, content, created_at, tokens) " \
@@ -181,7 +182,7 @@ async def tts(update: Update, context: CallbackContext):
             mysql.insertOne(sql, value)
 
             cnt = user.get('voice')
-            mysql.update("Update users set voice = %s where user_id = %s", [cnt-1, user_id])
+            mysql.update("Update users set voice = %s where user_id = %s", [cnt-duration/60, user_id])
             mysql.end()
             return CHOOSING
     else:

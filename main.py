@@ -32,12 +32,17 @@ from buttons.help import helper
 from buttons.start import start, start_group
 from buttons.role import set_system_content, reset_context, set_system_content_handler
 from buttons.statistics import statistics
-from buttons.voice import transcribe_audio, voice_options, tts, handle_voice
+from buttons.voice import transcribe_audio, voice_options, tts, handle_voice, choose
 from buttons.pic import handle_text_to_pic, generate_pic
 from chat.handler import answer_handler, group_handler
 from buttons.others import done, error_handler
 from buttons.ref import show_referral_info, exchange, exchange_handler
 
+
+from warnings import filterwarnings
+from telegram.warnings import PTBUserWarning
+
+filterwarnings(action="ignore", message=r".*CallbackQueryHandler", category=PTBUserWarning)
 
 def main() -> None:
     persistence = PicklePersistence(filepath='conversationbot')
@@ -84,7 +89,8 @@ def main() -> None:
             ],
             VOICE: [
                 MessageHandler(filters.TEXT, tts),
-                MessageHandler(filters.VOICE | filters.AUDIO, transcribe_audio)
+                MessageHandler(filters.VOICE | filters.AUDIO, transcribe_audio),
+                CallbackQueryHandler(choose, pattern='^vice_back')
             ],
         },
         fallbacks=[MessageHandler(filters.Regex(f'^({en_labels["done_button"]}|{fa_labels["done_button"]})$'), done)],
