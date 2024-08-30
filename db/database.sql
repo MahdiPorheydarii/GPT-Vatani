@@ -10,7 +10,7 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `lang` varchar(4) DEFAULT NULL,
   `gpt` tinyint DEFAULT 0,
-  `voice` tinyint DEFAULT 0,
+  `voice` float DEFAULT 0,
   `pic` tinyint DEFAULT 0,
   `sub` tinyint DEFAULT 0,
   `ref_link` varchar(128) DEFAULT NULL,

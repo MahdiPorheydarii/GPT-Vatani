@@ -30,13 +30,14 @@ async def statistics(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         gpt = 0
     if not image:
         image = 0
-
+    model = ['GPT 4o mini', 'GPT 4o'][max(0,user_info['sub']-1)]
     await update.message.reply_html(
         statistics_response[user_info["lang"]]
         .safe_substitute(user=user.mention_html(),
                          gpt=max(chat_count, gpt),
+                         model=model,
                          image=image,
-                         voice=voice),
+                         voice="{:.2f}".format(voice)),
         reply_markup=create_reply_keyboard(user_info["lang"]), disable_web_page_preview=True
     )
     return CHOOSING
