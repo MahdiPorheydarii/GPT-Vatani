@@ -1,8 +1,10 @@
 from telegram import ReplyKeyboardMarkup
 import logging
-import yaml
+from dotenv import load_dotenv
+import os
 
-# Enable logging
+load_dotenv()
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -15,10 +17,53 @@ fh.setFormatter(formatter)
 logger.setLevel(logging.INFO)
 logger.addHandler(fh)
 
-# Load data from config.yaml file
-with open("config.yaml") as f:
-    config = yaml.load(f, Loader=yaml.FullLoader)
-time_span = config["TIME_SPAN"]
+
+
+config = {
+    'AI':
+        {
+            'TYPE': os.getenv('AI_TYPE'),
+            'TOKEN': os.getenv('AI_TOKEN')
+        },
+    'BOT':
+        {
+            'TOKEN': os.getenv("BOT_TOKEN")
+        },
+    'MYSQL':
+        {
+            'DBHOST': os.getenv("DBHOST"),
+            'DBUSER': os.getenv("DBUSER"),
+            'DBPORT': int(os.getenv("DBPORT")),
+            'DBPWD': os.getenv("DBPWD"),
+            'DBNAME': os.getenv("DBNAME"),
+            'DBCHAR': "utf8mb4"
+        },
+    'TRX': os.getenv('TRX'),
+    'PIC_API_KEY': os.getenv("PIC_API_KEY"),
+    'ASS_API_KEY': os.getenv("ASS_API_KEY"),
+    'PRICES':
+        {
+            '1': 15,
+            '2': 20,
+            '3': 35,
+            '4': 5,
+            '5': 8,
+            '6': 15,
+            '7': 5,
+            '8': 10,
+            '9': 20,
+            '10': 5,
+            '11': 10,
+            '12': 20,
+            '13': 25,
+            '14': 40,
+            '15': 60
+        },
+    'DEVELOPER_CHAT_ID': 1211842223,
+    'TIME_SPAN': 1440
+}
+DEVELOPER_CHAT_ID= 1211842223
+time_span = 1440
 notification_channel = config.get("NOTIFICATION_CHANNEL")
 
 CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE, VOICE = range(5)

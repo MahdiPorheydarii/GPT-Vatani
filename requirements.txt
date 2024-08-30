@@ -70,3 +70,4 @@ urllib3==1.26.19
 wakatime==13.1.0
 websockets==13.0
 yarl==1.9.4
+python-dotenv==1.0.1
