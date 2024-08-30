@@ -26,7 +26,7 @@ CHOOSING, TYPING_REPLY, TYPING_SYS_CONTENT, TYPING_TEXT_FOR_IMAGE, VOICE = range
 en_labels = {
     "contact_admin": "🆘Help",
     "start_button": "🚀Start",
-    "set_sys_content_button": "🆔Customize Role",
+    "set_sys_content_button": "🆔Set Role",
     "reset_context_button": "🔃Restart Session",
     "statistics_button": "📈Statistics",
     "switch_role_button": "🙋Switch Roles",
@@ -42,7 +42,7 @@ en_labels = {
 fa_labels = {
     "contact_admin": "🆘کمک",
     "start_button": "🚀شروع",
-    "set_sys_content_button": "🆔سفارشی‌سازی نقش",
+    "set_sys_content_button": "🆔تنظیم نقش",
     "reset_context_button": "🔃شروع مجدد مکالمه",
     "statistics_button": "📈آمار",
     "switch_role_button": "🙋تغییر نقش",
@@ -63,9 +63,9 @@ language_labels = {
 def create_reply_keyboard(lang: str):
     labels = language_labels[lang]
     reply_keyboard = [
-        [labels["language_button"], labels["start_button"], labels["switch_role_button"]],
-        [labels["set_sys_content_button"], labels["reset_context_button"], labels['voice_button'], labels['pic_button']],
-        [labels['subscription_button'], labels["statistics_button"], labels["contact_admin"], labels['ref_button']],
+        [labels["language_button"], labels["reset_context_button"], labels["switch_role_button"]],
+        [labels["statistics_button"], labels['voice_button'], labels['pic_button']],
+        [labels['subscription_button'], labels['ref_button'], labels["contact_admin"]],
     ]
     return ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
 

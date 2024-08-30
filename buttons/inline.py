@@ -105,7 +105,7 @@ async def set_chat_mode_handle(update: Update, context: ContextTypes.DEFAULT_TYP
 
     await context.bot.send_message(
         update.callback_query.message.chat.id,
-        f"{chat_modes[system_content]['welcome_message']}",
+        f"{chat_modes[system_content]['welcome_message'][user.get('lang')]}",
         parse_mode=ParseMode.HTML, reply_markup=create_reply_keyboard(user["lang"])
     )
 
@@ -117,7 +117,6 @@ async def cancel_chat_mode_handle(update: Update, context: ContextTypes.DEFAULT_
     mysql.end()
     await context.bot.send_message(
         update.callback_query.message.chat.id,
-        text="已取消。\n您可以继续向我提问了" if user[
-                                                    "lang"] == "cn" else "Cancelled. \nYou can continue to ask me questions now.",
+        text="Cancelled. \nYou can continue to ask me questions now.",
         parse_mode=ParseMode.HTML, reply_markup=create_reply_keyboard(user["lang"])
     )

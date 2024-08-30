@@ -10,5 +10,5 @@ async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     mysql = Mysql()
     user = mysql.getOne("select * from users where user_id=%s", user_id)
     mysql.end()
-    await update.message.reply_text(say_help[user["lang"]], parse_mode="Markdown", disable_web_page_preview=True)
+    await update.message.reply_text(say_help[user["lang"]])
     return CHOOSING
