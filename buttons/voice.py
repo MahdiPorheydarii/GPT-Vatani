@@ -1,4 +1,3 @@
-import assemblyai as aai
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext, ContextTypes
 import time
@@ -8,15 +7,6 @@ import ast
 from db.MySqlConn import Mysql
 from buttons.templates import *
 
-def percent(s):
-    alphabet = 'abcdefghijklmnopqrstuvwxyz !@#$%?>.1234567890-=`'
-    c = 0
-    for i in s:
-        if i not in alphabet:
-            c+=1
-    return 1-c/len(s)
-
-aai.settings.api_key = config['ASS_API_KEY']
 
 async def handle_voice(update : Update, context : CallbackContext):
     query = update.callback_query
@@ -168,7 +158,7 @@ async def tts(update: Update, context: CallbackContext):
                 model="tts-1",
                 voice="nova",
                 input=input_text,
-                speed=0.85
+                speed=0.9
             )
             response.stream_to_file("output.ogg")
             duration = len(input_text.split(' ')) / 2.5
