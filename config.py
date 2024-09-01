@@ -108,11 +108,11 @@ language_labels = {
 def create_reply_keyboard(lang: str):
     labels = language_labels[lang]
     reply_keyboard = [
-        [labels["language_button"], labels["reset_context_button"], labels["switch_role_button"]],
-        [labels["statistics_button"], labels['voice_button'], labels['pic_button']],
+        [labels["language_button"], labels["statistics_button"], labels["switch_role_button"]],
+        [labels['voice_button'], labels['pic_button']],
         [labels['subscription_button'], labels['ref_button'], labels["contact_admin"]],
     ]
-    return ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
+    return ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False, resize_keyboard=True)
 
 create_reply_keyboard('en')
 
