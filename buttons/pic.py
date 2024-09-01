@@ -21,14 +21,15 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if prompt:
         url = "https://api.monsterapi.ai/v1/generate/sdxl-base"
         payload = {
-            "enhance": False,
-            "optimize": True,
+            "enhance": True,
+            "optimize": False,
             "safe_filter": False,
             "aspect_ratio": "square",
-            "guidance_scale": 15,
+            "guidance_scale": 7.5,
             "prompt": prompt,
             "style": "photographic",
-            "samples": 1
+            "samples": 1,
+            "steps": 60
         }
         headers = {
             "accept": "application/json",
