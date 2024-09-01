@@ -69,7 +69,8 @@ def main() -> None:
                 MessageHandler(filters.Regex(f'^({en_labels["subscription_button"]}|{fa_labels["subscription_button"]})$') & filters.ChatType.PRIVATE, show_subscription_options),
                 MessageHandler(filters.Regex(f'^({en_labels["ref_button"]}|{fa_labels["ref_button"]})$') & filters.ChatType.PRIVATE, show_referral_info),
                 MessageHandler(filters.ChatType.PRIVATE & (filters.TEXT | filters.VOICE | filters.PHOTO), answer_handler),
-                CommandHandler('prompt', group_handler, filters = filters.ChatType.GROUP | filters.ChatType.SUPERGROUP)
+                CommandHandler('prompt', group_handler, filters = filters.ChatType.GROUP | filters.ChatType.SUPERGROUP),
+                MessageHandler(filters.Regex(f'^(/prompt)$') & (filters.ChatType.GROUP | filters.ChatType.SUPERGROUP), group_handler),
             ],
             TYPING_REPLY: [
                 MessageHandler(filters.Regex(f'^({en_labels["contact_admin"]}|{fa_labels["contact_admin"]})$'), helper),
