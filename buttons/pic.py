@@ -10,12 +10,8 @@ from buttons.templates import text_to_image,failed_to_generate_image,valid_text_
 API_KEY = config['PIC_API_KEY']
 
 async def handle_text_to_pic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    mysql = Mysql()
-    user = mysql.getOne("select * from users where user_id=%s", update.effective_user.id)
-    mysql.end()
 
-    await update.message.reply_text(text_to_image[user['lang']], reply_markup=create_reply_keyboard(user.get('lang')))
-    
+    await update.message.reply_text(text_to_image[context.user_data['lang']], reply_markup=create_reply_keyboard(context.user_data['lang']))
     return TYPING_TEXT_FOR_IMAGE
 async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mysql = Mysql()
@@ -26,7 +22,7 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
         url = "https://api.monsterapi.ai/v1/generate/sdxl-base"
         payload = {
             "enhance": False,
-            "optimize": False,
+            "optimize": True,
             "safe_filter": False,
             "aspect_ratio": "square",
             "guidance_scale": 15,
@@ -63,6 +59,7 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         await update.message.reply_photo(photo=open(image_path, "rb"), reply_markup=create_reply_keyboard(user.get('lang')))
                         mysql.insertOne("insert into records (user_id, role, content, created_at) values (%s, %s, %s, %s)", 
                                         [update.effective_user.id, "user_pic", prompt, date_time])
+                        mysql.update("update users set pic=pic-1 where user_id=%s", [update.effective_user.id])
                         mysql.end()
                         return CHOOSING
                     else:

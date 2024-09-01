@@ -78,7 +78,7 @@ en_labels = {
     "language_button": "🔤Language",
     "done_button": "Done",
     "cancel_button": "🚫Cancel",
-    "voice_button": "Voice 🎤",
+    "voice_button": "Voice Assistant 🎤",
     "pic_button": "Image Generation🖼",
     "subscription_button": "Subscription 💳",
     "ref_button": "Referral 👤"
@@ -94,7 +94,7 @@ fa_labels = {
     "language_button": "🔤زبان",
     "done_button": "انجام شد",
     "cancel_button": "🚫لغو",
-    "voice_button": "صدا 🎤",
+    "voice_button": "دستیار صوتی 🎤",
     "pic_button": "ساخت تصویر 🖼",
     "subscription_button": "اشتراک 💳",
     "ref_button": "دعوت 👤"
