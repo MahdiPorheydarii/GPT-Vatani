@@ -147,7 +147,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     placeholder_message = await update.message.reply_text("ㅤ")
     records = mysql.getMany(f"select * from records where user_id={user_id} and role='user' and reset_at is null order by id desc",
-                            2)
+                            user_checkin.get('sub'))
 
     if update.message:
         messages = []
