@@ -56,7 +56,7 @@ async def start_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     member_count = await chat_info.get_member_count()
     
 
-    group_checkin = mysql.getOne(f"select * from group_chats where group_id={chat_info.id}")
+    group_checkin = mysql.getOne("select * from group_chats where group_id=%s", [chat_info.id])
     if not group_checkin:
         date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         sql = "insert into group_chats (group_id, members, created_at) values (%s, %s, %s)"
