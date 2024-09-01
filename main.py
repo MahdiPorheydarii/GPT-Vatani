@@ -69,8 +69,6 @@ def main() -> None:
                 MessageHandler(filters.Regex(f'^({en_labels["subscription_button"]}|{fa_labels["subscription_button"]})$') & filters.ChatType.PRIVATE, show_subscription_options),
                 MessageHandler(filters.Regex(f'^({en_labels["ref_button"]}|{fa_labels["ref_button"]})$') & filters.ChatType.PRIVATE, show_referral_info),
                 MessageHandler(filters.ChatType.PRIVATE & (filters.TEXT | filters.VOICE | filters.PHOTO), answer_handler),
-                CommandHandler('prompt', group_handler, filters = filters.ChatType.GROUP | filters.ChatType.SUPERGROUP),
-                MessageHandler(filters.Regex(f'^(/prompt)$') & (filters.ChatType.GROUP | filters.ChatType.SUPERGROUP), group_handler),
             ],
             TYPING_REPLY: [
                 MessageHandler(filters.Regex(f'^({en_labels["contact_admin"]}|{fa_labels["contact_admin"]})$'), helper),
@@ -100,6 +98,7 @@ def main() -> None:
     )
 
     application.add_handler(conv_handler)
+    application.add_handler(CommandHandler('prompt', group_handler, filters = filters.ChatType.GROUP | filters.ChatType.SUPERGROUP))
     application.add_handler(CallbackQueryHandler(handle_voice, pattern="^voice_"))
     application.add_handler(CallbackQueryHandler(show_chat_modes_callback_handle, pattern="^show_chat_modes"))
     application.add_handler(CallbackQueryHandler(set_chat_mode_handle, pattern="^set_chat_mode"))
