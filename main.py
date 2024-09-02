@@ -46,7 +46,11 @@ filterwarnings(action="ignore", message=r".*CallbackQueryHandler", category=PTBU
 
 def main() -> None:
     persistence = PicklePersistence(filepath='conversationbot')
-    application = Application.builder().token(config["BOT"]["TOKEN"]).persistence(persistence).build()
+    application = (
+        Application.builder().token(config["BOT"]["TOKEN"])
+        .connect_timeout(7).read_timeout(7).write_timeout()
+        .persistence(persistence).build()
+    )
 
     en_labels = language_labels["en"]
     fa_labels = language_labels["fa"]
