@@ -19,7 +19,6 @@ from config import (
 
 
 async def group_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print("here")
     mysql = Mysql()
     print(update.effective_chat.id)
     group_checkin = mysql.getOne(f"select * from group_chats where group_id={update.effective_chat.id}")
@@ -29,10 +28,13 @@ async def group_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = ' '.join(context.args)
     if text == ' ' or text == '':
         await update.message.reply_text("please enter your prompt after /prompt in the same message")
-        return CHOOSING
+        return
     # if group_checkin.get('members') < 10:
         # await update.message.reply_text("This feature is for group chats with 10+ members!")
         # return CHOOSING
+    if group_checkin.get('cnt') >= 50:
+        await update.message.reply_text("You have reached the limit of 50 free credits for your group!\ncontact admin for more information.")
+        return
     messages = []
     messages.append({"role": "user", "content": text})
     prompt_tokens = count_tokens(text)
