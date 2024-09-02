@@ -39,20 +39,21 @@ async def show_referral_info(update: Update, context: CallbackContext):
 async def exchange(update : Update, context : CallbackContext):
     query = update.callback_query
     await query.answer()
-    user_id = update.effective_user.id
-    mysql = Mysql()
-    user = mysql.getOne("select * from users where user_id=%s", [user_id])
-    mysql.end()
 
-    keyboard = [
-        [InlineKeyboardButton(exchange_referrals_4o_mini[user['lang']], callback_data='exc_gpt')],
-        [InlineKeyboardButton(exchange_referrals_voice_model[user['lang']], callback_data='exc_voice')],
-        [InlineKeyboardButton(exchange_referrals_image_model[user['lang']], callback_data='exc_im')],
-    ]
+    lang = context.user_data['lang']
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await query.edit_message_text(text="Choose your plan.", reply_markup=reply_markup)
+    if lang:
+        keyboard = [
+            [InlineKeyboardButton(exchange_referrals_4o_mini[lang], callback_data='exc_gpt')],
+            [InlineKeyboardButton(exchange_referrals_voice_model[lang], callback_data='exc_voice')],
+            [InlineKeyboardButton(exchange_referrals_image_model[lang], callback_data='exc_im')],
+        ]
 
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(text="Choose your plan.", reply_markup=reply_markup)
+    else:
+        await update.message.reply_text("Please use /start again, we had updates!")
+        
 async def exchange_handler(update : Update, context : CallbackContext):
     query = update.callback_query
     await query.answer()

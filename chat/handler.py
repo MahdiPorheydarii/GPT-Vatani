@@ -29,9 +29,9 @@ async def group_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if text == ' ' or text == '':
         await update.message.reply_text("please enter your prompt after /prompt in the same message")
         return
-    # if group_checkin.get('members') < 10:
-        # await update.message.reply_text("This feature is for group chats with 10+ members!")
-        # return CHOOSING
+    if group_checkin.get('members') < 10:
+        await update.message.reply_text("This feature is for group chats with 10+ members!")
+        return CHOOSING
     if group_checkin.get('cnt') >= 50:
         await update.message.reply_text("You have reached the limit of 50 free credits for your group!\ncontact admin for more information.")
         return
@@ -90,7 +90,7 @@ async def answer_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         sql = "insert into users (user_id, name, nick_name, system_content, created_at, lang, gpt, voice, pic) values (%s, %s, %s, %s, %s, %s, %s)"
         value = [user_id, user.username, nick_name, 0, None,
-                 date_time, 'en', 0, 3, 3]
+                 date_time, 'en', 0, 1.66, 3]
         mysql.insertOne(sql, value)
 
     if user_checkin and not user_checkin.get("nick_name"):

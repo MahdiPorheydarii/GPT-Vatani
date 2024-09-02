@@ -46,6 +46,7 @@ async def set_system_content_handler(update: Update, context: ContextTypes.DEFAU
         await update.message.reply_text(
             text=reply_text_after_canceling[user['lang']],
             reply_markup=create_reply_keyboard(user["lang"]), parse_mode='Markdown')
+        mysql.end()
     else:
         user_id = update.effective_user.id
         mysql = Mysql()
