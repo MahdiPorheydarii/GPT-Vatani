@@ -120,7 +120,7 @@ async def handle_text_to_speech(update: Update, context: CallbackContext):
     await query.answer()
     lang = context.user_data['lang']
     if lang:
-        await query.edit_message_text(text=handle_text_to_speech[user['lang']])
+        await query.edit_message_text(text=handle_text_to_speech[lang])
         context.user_data['awaiting_prompt'] = True
     else:
         await update.message.reply_text("Please use /start again, we had updates!")
