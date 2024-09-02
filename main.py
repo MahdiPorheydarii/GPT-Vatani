@@ -48,7 +48,7 @@ def main() -> None:
     persistence = PicklePersistence(filepath='conversationbot')
     application = (
         Application.builder().token(config["BOT"]["TOKEN"])
-        .connect_timeout(7).read_timeout(7).write_timeout()
+        .connect_timeout(7).read_timeout(7).write_timeout(10)
         .persistence(persistence).build()
     )
 
