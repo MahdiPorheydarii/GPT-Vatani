@@ -2,18 +2,60 @@ from string import Template
 
 say_help = {
     "en": """
-If anything went wrong, just type: /start or restart the Bot to reset it.
+🤖 Bot Features:
+1)Chat with ChatGPT: Engage in conversations with the AI, ask questions, and receive informative responses.
+You can:
+   - use voice messages
+   - attach pictures 
+2)Text to Speech: Convert written text into natural-sounding speech.
+3)Speech to Text: Send audio messages, and the bot will transcribe them into text.
+4)Generate Images: Describe any scene or idea, and the bot will create a corresponding image for you.
 
-or 
+🎁 Free GPT-4o Mini in Groups:
+If you add this bot to a group with more than 20 members, you can use the GPT-4o Mini model for free in that group! Here’s how:
+1)Add the bot to the group.
+2)Type /start to activate the bot in the group.
+3)Use /prompt followed by your query to interact with GPT-4o Mini.
 
-contact 👉 @MyGPT_PR 👈 for more help!
+👥 Referral Program:
+Invite friends to use this bot and earn rewards!
+For every successful referral, you get closer to unlocking exclusive features.
+
+🧠 Memory Functionality:
+Free Users: The bot remembers only your last message during a conversation.
+Subscribers: Enjoy an enhanced experience where the bot remembers your last 3 messages, allowing for more contextual and meaningful conversations.
+
+📢 Channel for Updates:
+Stay updated with the latest features and improvements by joining our official channel: [@MyGPT_Channel]
+📞 Support:
+Need help? Contact our support team at: [@MyGPT_PR]
 """,
     "fa": """
-اگر مشکلی پیش آمد، فقط تایپ کنید: /start یا ربات را ریستارت کنید تا تنظیمات به حالت اولیه بازگردد.
+🤖 ویژگی‌های ربات:
 
-یا
+۱)گفتگو با ChatGPT: با این هوش مصنوعی گفتگو کنید، سوالات خود را بپرسید و پاسخ‌های اطلاعاتی دریافت کنید. شما می‌توانید:
+- از پیام‌های صوتی استفاده کنید
+- تصاویر ضمیمه کنید
+۲)تبدیل متن به گفتار: متن نوشته‌شده را به گفتاری طبیعی تبدیل کنید.
+۳)تبدیل گفتار به متن: پیام‌های صوتی ارسال کنید و ربات آن‌ها را به متن تبدیل می‌کند.
+۴)تولید تصاویر: هر صحنه یا ایده‌ای را توصیف کنید و ربات تصویری مطابق با آن برای شما ایجاد خواهد کرد.
 
-با 👈 @MyGPT_PR 👉 برای کمک بیشتر تماس بگیرید!
+🎁 استفاده رایگان از GPT-4o Mini در گروه‌ها: اگر این ربات را به گروهی با بیش از ۲۰ عضو اضافه کنید، می‌توانید به صورت رایگان از مدل GPT-4o Mini در آن گروه استفاده کنید! مراحل:
+
+۱)ربات را به گروه اضافه کنید.
+۲)دستور /start را برای فعال‌سازی ربات در گروه تایپ کنید.
+۳)از دستور /prompt همراه با درخواست خود برای تعامل با GPT-4o Mini استفاده کنید.
+
+👥 برنامه ارجاع: دوستان خود را به استفاده از این ربات دعوت کنید و پاداش بگیرید! با هر ارجاع موفق، به باز کردن ویژگی‌های انحصاری نزدیک‌تر می‌شوید.
+
+🧠 قابلیت حافظه:
+
+کاربران رایگان: ربات فقط آخرین پیام شما را در حین مکالمه به خاطر می‌آورد.
+مشترکین: از تجربه بهبود یافته‌ای لذت ببرید که در آن ربات آخرین ۳ پیام شما را به خاطر می‌آورد، که منجر به مکالمات بیشتر و معنادارتر می‌شود.
+
+📢 کانال برای به‌روزرسانی‌ها: با پیوستن به کانال رسمی ما از آخرین ویژگی‌ها و بهبودها مطلع شوید: [@MyGPT_Channel]
+
+📞 پشتیبانی: نیاز به کمک دارید؟ با تیم پشتیبانی ما تماس بگیرید: [@MyGPT_PR]
 """}
 
 role = {
