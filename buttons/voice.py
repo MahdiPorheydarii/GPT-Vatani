@@ -19,7 +19,8 @@ async def handle_voice(update: Update, context: CallbackContext):
 
     if lang:
         if query.data == "voice_tts":
-            await update.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
+            await query.edit_message_text(voice_tts_respond[lang])
+            await query.edit_message_reply_markup(reply_markup=create_back_button_keyboard())
             context.user_data['awaiting_prompt'] = True
             return VOICE
         elif query.data == "voice_stt":
@@ -57,9 +58,12 @@ async def voice_options(update: Update, context: CallbackContext):
         return CHOOSING
 
 async def handle_speech_to_text(update: Update, context: CallbackContext):
+    query = update.callback_query
+    await query.answer()
     lang = context.user_data['lang']
     if lang:
-        await update.message.reply_text(handle_stt[lang], reply_markup=create_back_button_keyboard())
+        await query.edit_message_text(text=handle_text_to_speech[lang])
+        await query.edit_message_reply_markup(reply_markup=create_back_button_keyboard())
         context.user_data['awaiting_audio'] = True
     else:
         await update.message.reply_text("Please use /start again, we had updates!")
