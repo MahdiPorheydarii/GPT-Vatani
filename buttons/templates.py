@@ -349,19 +349,19 @@ Please enter the text you want to convert to speech.
 
 }
 text_min_limit = {
-    "en": Template("""
+    "en": """
 The maximum number of characters for a regular user is 200.
 To use this feature, please reduce the number of characters in your message or purchase a subscription.
 [Purchase Subscription](https://Zarinp.al/MyGPT)
 If you have any questions, you can contact support at @MyGPT_PR.
-"""),
+""",
     
-    "fa": Template("""
+    "fa": """
 حداکثر تعداد کاراکتر برای کاربر معمولی ۲۰۰ عدد است.
 برای استفاده از این بخش، تعداد کاراکتر پیام خود را کاهش دهید یا اشتراک تهیه کنید.
 [خرید اشتراک](https://Zarinp.al/MyGPT)
 اگر سوالی دارید، می‌توانید با پشتیبانی @MyGPT_PR تماس بگیرید.
-""")
+"""
 }
 appropriate_question = {
     "en": Template("""
@@ -380,35 +380,35 @@ $answer
 }
 
 desired_plan ={
-    "en": Template("""
+    "en": """
 Please choose your desired plan
-"""),
+""",
 
-    "fa": Template("""
+    "fa": """
 $answer
 لطفاً گزینه مورد نظر خود را انتخاب کنید
-""")
+"""
 }
 
 
 subscription_plan ={
-    "en": Template("""
+    "en": """
 Please choose your subscription plan
-"""),
+""",
 
-    "fa": Template("""
+    "fa": """
 لطفاً گزینه اشتراک خود را انتخاب کنید
-""")
+"""
 }
 
 subscription_costs = {
-    "en": Template("""
+    "en": """
 Economic: 100/m\nNormal: 200/m\nPro: 500/m
-"""),
+""",
 
-    "fa": Template("""
+    "fa": """
 اقتصادی: ۱۰۰/ماه\nعادی: ۲۰۰/ماه\nحرفه‌ای: ۵۰۰/ماه
-""")
+"""
 }
 
 
