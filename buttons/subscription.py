@@ -201,6 +201,7 @@ async def confirm_subscription(update: Update, context: CallbackContext):
                 text = "The payment was unsuccessful"
 
     elif payment_method == 'irr':
+        date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         mysql.insertOne("""
             INSERT INTO payments (user_id, plan, created_at)
             VALUES (%s, %s, %s)
