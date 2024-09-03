@@ -19,23 +19,21 @@ async def handle_voice(update: Update, context: CallbackContext):
 
     if lang:
         if query.data == "voice_tts":
-            await query.edit_message_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
+            await query.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
             context.user_data['awaiting_prompt'] = True
             return VOICE
         elif query.data == "voice_stt":
             await handle_speech_to_text(update, context)
             return VOICE
     else:
-        await update.message.reply_text("Please use /start again, we had updates!")
+        await query.message.reply_text("Please use /start again, we had updates!")
         return CHOOSING
 
 async def choose(update: Update, context: CallbackContext):
-    if update.message.text == BACK_BUTTON:
-        await update.message.reply_text(
-            voice_back_respond[context.user_data['lang']],
-            reply_markup=create_reply_keyboard(context.user_data['lang'])
-        )
-        return CHOOSING
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(voice_back_respond[context.user_data['lang']])
+    return CHOOSING
 
 async def voice_options(update: Update, context: CallbackContext):
     lang = context.user_data['lang']
@@ -61,10 +59,10 @@ async def handle_speech_to_text(update: Update, context: CallbackContext):
     await query.answer()
     lang = context.user_data['lang']
     if lang:
-        await query.edit_message_text(text=handle_stt[lang], reply_markup=create_back_button_keyboard())
+        await query.message.reply_text(handle_stt[lang], reply_markup=create_back_button_keyboard())
         context.user_data['awaiting_audio'] = True
     else:
-        await update.message.reply_text("Please use /start again, we had updates!")
+        await query.message.reply_text("Please use /start again, we had updates!")
 
 async def transcribe_audio(update: Update, context: CallbackContext):
     if 'awaiting_audio' in context.user_data and context.user_data['awaiting_audio']:
@@ -120,14 +118,22 @@ async def transcribe_audio(update: Update, context: CallbackContext):
             return CHOOSING
 
 async def handle_text_to_speech(update: Update, context: CallbackContext):
+    query = update.callback_query
+    await query.answer()
     lang = context.user_data['lang']
     if lang:
-        await update.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
+        await query.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
         context.user_data['awaiting_prompt'] = True
     else:
-        await update.message.reply_text("Please use /start again, we had updates!")
+        await query.message.reply_text("Please use /start again, we had updates!")
 
 async def tts(update: Update, context: CallbackContext):
+    if update.message and update.message.text == BACK_BUTTON:
+        await update.message.reply_text(
+            "Returning to the main menu.", 
+            reply_markup=create_reply_keyboard(context.user_data['lang'])
+        )
+        return CHOOSING
     if 'awaiting_prompt' in context.user_data and context.user_data['awaiting_prompt']:
         context.user_data['awaiting_prompt'] = False
 
