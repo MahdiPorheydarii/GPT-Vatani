@@ -72,7 +72,7 @@ async def transcribe_audio(update: Update, context: CallbackContext):
         user = mysql.getOne(f"select * from users where user_id={user_id}")
 
         chat_count = mysql.getOne(
-            f"select count(*) as count from records where role='user_voice' and user_id = {user_id};")
+            f"select count(*) as count from records where role='user_voice' and user_id={user_id};")
 
         if chat_count.get('count') > 2 and user.get('voice') < 1:
             reply = voice_text_count_limit[user['lang']]
