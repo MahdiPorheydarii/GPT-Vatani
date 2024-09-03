@@ -1,5 +1,5 @@
-from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import CallbackContext, ContextTypes
+from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import CallbackContext
 import time
 from openai import OpenAI
 from config import config, CHOOSING, create_reply_keyboard, VOICE
@@ -39,12 +39,18 @@ async def choose(update: Update, context: CallbackContext):
 
 async def voice_options(update: Update, context: CallbackContext):
     lang = context.user_data['lang']
-
+    keyboard = [
+        [
+            InlineKeyboardButton("Speech to Text", callback_data='voice_stt'),
+            InlineKeyboardButton("Text to Speech", callback_data='voice_tts')
+        ],
+        [
+            InlineKeyboardButton("Back", callback_data='vice_back')
+        ]
+    ]
     if lang:
-        await update.message.reply_text(
-            voice_reply_text[lang], 
-            reply_markup=create_back_button_keyboard()
-        ) 
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text(voice_reply_text[lang], reply_markup=reply_markup)
         return VOICE
     else:
         await update.message.reply_text("Please use /start again, we had updates!")
