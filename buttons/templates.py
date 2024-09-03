@@ -265,7 +265,7 @@ voice_tts_respond = {
 Please enter the text you want to convert to speech.
 """,
     "fa": """
-"لطفاً متنی که می‌خواهید به گفتار تبدیل شود را وارد کنید"""
+لطفاً متنی که می‌خواهید به گفتار تبدیل شود را وارد کنید"""
 
 }
 voice_reply_text = {

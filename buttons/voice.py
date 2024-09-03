@@ -19,8 +19,7 @@ async def handle_voice(update: Update, context: CallbackContext):
 
     if lang:
         if query.data == "voice_tts":
-            await query.edit_message_text(voice_tts_respond[lang])
-            await query.edit_message_reply_markup(reply_markup=create_back_button_keyboard())
+            await query.edit_message_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
             context.user_data['awaiting_prompt'] = True
             return VOICE
         elif query.data == "voice_stt":
@@ -62,8 +61,7 @@ async def handle_speech_to_text(update: Update, context: CallbackContext):
     await query.answer()
     lang = context.user_data['lang']
     if lang:
-        await query.edit_message_text(text=handle_text_to_speech[lang])
-        await query.edit_message_reply_markup(reply_markup=create_back_button_keyboard())
+        await query.edit_message_text(text=handle_stt[lang], reply_markup=create_back_button_keyboard())
         context.user_data['awaiting_audio'] = True
     else:
         await update.message.reply_text("Please use /start again, we had updates!")
@@ -124,7 +122,7 @@ async def transcribe_audio(update: Update, context: CallbackContext):
 async def handle_text_to_speech(update: Update, context: CallbackContext):
     lang = context.user_data['lang']
     if lang:
-        await update.message.reply_text(handle_text_to_speech[lang], reply_markup=create_back_button_keyboard())
+        await update.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
         context.user_data['awaiting_prompt'] = True
     else:
         await update.message.reply_text("Please use /start again, we had updates!")
