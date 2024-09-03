@@ -385,7 +385,6 @@ Please choose your desired plan
 """,
 
     "fa": """
-$answer
 لطفاً گزینه مورد نظر خود را انتخاب کنید
 """
 }
