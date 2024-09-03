@@ -210,7 +210,7 @@ async def confirm_subscription(update: Update, context: CallbackContext):
     
     mysql.end()
 
-    await query.edit_message_text(text, reply_markup=create_reply_keyboard(context.user_data['lang']))
+    await query.edit_message_text(text)
 
 
 
