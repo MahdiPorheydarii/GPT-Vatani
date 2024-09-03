@@ -1,39 +1,34 @@
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
+import httpx
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
 from config import config, create_reply_keyboard, TYPING_TEXT_FOR_IMAGE, CHOOSING
 import asyncio
-import httpx
 import time
 from db.MySqlConn import Mysql
 from buttons.templates import text_to_image, failed_to_generate_image, valid_text_to_img
 
 API_KEY = config['PIC_API_KEY']
+
 BACK_BUTTON = "🔙 Back"
 
-def create_reply_keyboard_with_back(lang, include_back=False):
-    keyboard = create_reply_keyboard(lang)
-    if include_back:
-        keyboard.append([BACK_BUTTON])  
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+def create_back_button_keyboard():
+    return ReplyKeyboardMarkup([[BACK_BUTTON]], resize_keyboard=True, one_time_keyboard=True)
 
 async def handle_text_to_pic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-
-    reply_keyboard = create_reply_keyboard_with_back(context.user_data['lang'], include_back=True)
+    back_keyboard = create_back_button_keyboard()
     
     await update.message.reply_text(
         text_to_image[context.user_data['lang']], 
-        reply_markup=reply_keyboard
+        reply_markup=back_keyboard
     )
     return TYPING_TEXT_FOR_IMAGE
-
 async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
     if update.message.text == BACK_BUTTON:
         await update.message.reply_text(
             "Returning to the main menu.", 
-            reply_markup=create_reply_keyboard_with_back(context.user_data['lang'])
+            reply_markup=create_reply_keyboard(context.user_data['lang'])
         )
-        return CHOOSING  
+        return CHOOSING 
 
     mysql = Mysql()
     user = mysql.getOne("select * from users where user_id=%s", update.effective_user.id)
@@ -77,7 +72,7 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
                         await update.message.reply_photo(
                             photo=open(image_path, "rb"), 
-                            reply_markup=create_reply_keyboard_with_back(user.get('lang'))
+                            reply_markup=create_reply_keyboard(user.get('lang'))
                         )
                         mysql.insertOne(
                             "insert into records (user_id, role, content, created_at) values (%s, %s, %s, %s)", 
@@ -91,13 +86,13 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 await update.message.reply_text(
                     failed_to_generate_image[user['lang']], 
-                    reply_markup=create_reply_keyboard_with_back(user.get('lang'))
+                    reply_markup=create_reply_keyboard(user.get('lang'))
                 )
                 return CHOOSING
     else:
         await update.message.reply_text(
             valid_text_to_img[user['lang']], 
-            reply_markup=create_reply_keyboard_with_back(user.get('lang'))
+            reply_markup=create_reply_keyboard(user.get('lang'))
         )
     mysql.end()
     return CHOOSING
