@@ -379,10 +379,37 @@ $answer
 """)
 }
 
+desired_plan ={
+    "en": Template("""
+Please choose your desired plan
+"""),
+
+    "fa": Template("""
+$answer
+لطفاً گزینه مورد نظر خود را انتخاب کنید
+""")
+}
 
 
+subscription_plan ={
+    "en": Template("""
+Please choose your subscription plan
+"""),
 
+    "fa": Template("""
+لطفاً گزینه اشتراک خود را انتخاب کنید
+""")
+}
 
+subscription_costs = {
+    "en": Template("""
+Economic: 100/m\nNormal: 200/m\nPro: 500/m
+"""),
+
+    "fa": Template("""
+اقتصادی: ۱۰۰/ماه\nعادی: ۲۰۰/ماه\nحرفه‌ای: ۵۰۰/ماه
+""")
+}
 
 
 

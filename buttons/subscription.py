@@ -5,6 +5,7 @@ import httpx
 from db.MySqlConn import Mysql
 import random
 import time
+from buttons.templates import subscription_plan,desired_plan,subscription_costs
 
 class TRX:
     invoice_url = "https://api.plisio.net/api/v1/invoices/new"
@@ -53,19 +54,23 @@ async def show_subscription_options(update: Update, context: CallbackContext, qu
         [InlineKeyboardButton(text="Text Model", callback_data="subscription_text")],
         [InlineKeyboardButton(text="Voice Model", callback_data="subscription_voice")],
         [InlineKeyboardButton(text="Image Model", callback_data="subscription_image")],
-        [InlineKeyboardButton(text="All in One", callback_data="subscription_all")],
     ]
+    mysql = Mysql()
+    user_id = update.effective_user.id
+    user = mysql.getOne(f"select * from users where user_id={user_id}")
     reply_markup = InlineKeyboardMarkup(subscription_keyboard)
     if query and query.data == "subscription_options":
-        await query.edit_message_text(text="Please choose your desired plan:", reply_markup=reply_markup)
+        await query.edit_message_text(text=desired_plan[user['lang']], reply_markup=reply_markup)
     else:
-        await update.message.reply_text('Please choose your desired plan:', reply_markup=reply_markup)
+        await update.message.reply_text(desired_plan[user['lang']], reply_markup=reply_markup)
 
 async def show_subscription_plans(update: Update, context: CallbackContext):
     """Show available plans for the selected subscription model."""
     query = update.callback_query
     await query.answer()
-    
+    mysql = Mysql()
+    user_id = update.effective_user.id
+    user = mysql.getOne(f"select * from users where user_id={user_id}")
     if query.data == "subscription_text":
         plans_keyboard = [
             [InlineKeyboardButton(text="GPT 4o", callback_data="gpt_4")],
@@ -86,23 +91,18 @@ async def show_subscription_plans(update: Update, context: CallbackContext):
             [InlineKeyboardButton(text="100 Credits - 59,900 IR Toman - 20 TRX", callback_data="plan_12")],
             [InlineKeyboardButton(text="Back", callback_data="subscription_options")]
         ]
-    elif query.data == "subscription_all":
-        plans_keyboard = [
-            [InlineKeyboardButton(text="Silver 79,900 IR Toman - 25 TRX", callback_data="plan_13")],
-            [InlineKeyboardButton(text="Gold - 129,900 IR Toman - 40 TRX", callback_data="plan_14")],
-            [InlineKeyboardButton(text="Platinum - 199,000 IR Toman - 60 TRX", callback_data="plan_15")],
-            [InlineKeyboardButton(text="Back", callback_data="subscription_options")]
-        ]
     elif query.data == "subscription_options":
         await show_subscription_options(update, context, query)
         return
     reply_markup = InlineKeyboardMarkup(plans_keyboard)
-    await query.edit_message_text(text="Choose your subscription plan:", reply_markup=reply_markup)
+    await query.edit_message_text(text=subscription_plan[user['lang']], reply_markup=reply_markup)
 
 async def gpt(update: Update, context: CallbackContext):
     query = update.callback_query
     await query.answer()
-
+    mysql = Mysql()
+    user_id = update.effective_user.id
+    user = mysql.getOne(f"select * from users where user_id={user_id}")
     if query.data == "gpt_4":
         plans_keyboard = [
             [InlineKeyboardButton(text="Economic Subscription - 49,900 IR Toman - 15 TRX", callback_data="plan_1")],
@@ -110,7 +110,7 @@ async def gpt(update: Update, context: CallbackContext):
             [InlineKeyboardButton(text="Pro Subscription - 119,900 IR Toman - 35 TRX", callback_data="plan_3")],
             [InlineKeyboardButton(text="Back", callback_data="subscription_options")]
         ]
-        reply = "Economic: 50/m\nNormal: 100/m\nPro: 200/m"
+        reply = subscription_costs[user['lang']]
     elif query.data == "gpt_4_m":
         plans_keyboard = [
             [InlineKeyboardButton(text="Economic Subscription - 19,900 IR Toman - 5 TRX", callback_data="plan_4")],
@@ -118,7 +118,7 @@ async def gpt(update: Update, context: CallbackContext):
             [InlineKeyboardButton(text="Pro Subscription - 59,900 IR Toman - 15 TRX", callback_data="plan_6")],
             [InlineKeyboardButton(text="Back", callback_data="subscription_options")]
         ]
-        reply = "Economic: 100/m\nNormal: 200/m\nPro: 500/m"
+        reply = subscription_costs[user['lang']]
     
     if query.data == "subscription_options":
         await show_subscription_options(update, context, query)
