@@ -8,7 +8,6 @@ from db.MySqlConn import Mysql
 from buttons.templates import text_to_image, failed_to_generate_image, valid_text_to_img
 
 API_KEY = config['PIC_API_KEY']
-
 BACK_BUTTON = "🔙 Back"
 
 def create_back_button_keyboard():
@@ -41,7 +40,7 @@ async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "optimize": False,
             "safe_filter": False,
             "aspect_ratio": "square",
-            "guidance_scale": 7.5,
+            "guidance_scale": 15,
             "prompt": prompt,
             "style": "photographic",
             "samples": 1,

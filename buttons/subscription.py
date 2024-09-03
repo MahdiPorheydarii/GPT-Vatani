@@ -1,11 +1,27 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import CallbackContext
-from config import config
+from config import config, create_reply_keyboard
 import httpx
 from db.MySqlConn import Mysql
 import random
 import time
 from buttons.templates import subscription_plan,desired_plan,subscription_costs
+
+
+Zarinpal = {
+    '1': 'https://zarinp.al/626420',
+    '2': 'https://zarinp.al/626422',
+    '3': 'https://zarinp.al/626424',
+    '4': 'https://zarinp.al/619779',
+    '5': 'https://zarinp.al/626405',
+    '6': 'https://zarinp.al/626406',
+    '7': 'https://zarinp.al/626407',
+    '8': 'https://zarinp.al/626408',
+    '9': 'https://zarinp.al/626410',
+    '10': 'https://zarinp.al/626412',
+    '11': 'https://zarinp.al/626413',
+    '12': 'https://zarinp.al/626414',
+}
 
 class TRX:
     invoice_url = "https://api.plisio.net/api/v1/invoices/new"
@@ -80,15 +96,15 @@ async def show_subscription_plans(update: Update, context: CallbackContext):
     elif query.data == "subscription_voice":
         plans_keyboard = [
             [InlineKeyboardButton(text="10 Minutes - 14,900 IR Toman - 5 TRX", callback_data="plan_7")],
-            [InlineKeyboardButton(text="20 Minutes - 29,900 IR Toman - 10 TRX", callback_data="plan_8")],
-            [InlineKeyboardButton(text="60 Minutes - 79,900 IR Toman 20 TRX", callback_data="plan_9")],
+            [InlineKeyboardButton(text="20 Minutes - 24,900 IR Toman - 10 TRX", callback_data="plan_8")],
+            [InlineKeyboardButton(text="60 Minutes - 59,900 IR Toman 20 TRX", callback_data="plan_9")],
             [InlineKeyboardButton(text="Back", callback_data="subscription_options")]
         ]
     elif query.data == "subscription_image":
         plans_keyboard = [
             [InlineKeyboardButton(text="20 Credits - 14,900 IR Toman - 5 TRX", callback_data="plan_10")],
-            [InlineKeyboardButton(text="40 Credits - 29,900 IR Toman - 10 TRX", callback_data="plan_11")],
-            [InlineKeyboardButton(text="100 Credits - 59,900 IR Toman - 20 TRX", callback_data="plan_12")],
+            [InlineKeyboardButton(text="40 Credits - 24,900 IR Toman - 10 TRX", callback_data="plan_11")],
+            [InlineKeyboardButton(text="100 Credits - 49,900 IR Toman - 20 TRX", callback_data="plan_12")],
             [InlineKeyboardButton(text="Back", callback_data="subscription_options")]
         ]
     elif query.data == "subscription_options":
@@ -113,9 +129,9 @@ async def gpt(update: Update, context: CallbackContext):
         reply = subscription_costs[user['lang']]
     elif query.data == "gpt_4_m":
         plans_keyboard = [
-            [InlineKeyboardButton(text="Economic Subscription - 19,900 IR Toman - 5 TRX", callback_data="plan_4")],
-            [InlineKeyboardButton(text="Normal Subscription - 29,900 IR Toman - 8 TRX", callback_data="plan_5")],
-            [InlineKeyboardButton(text="Pro Subscription - 59,900 IR Toman - 15 TRX", callback_data="plan_6")],
+            [InlineKeyboardButton(text="Economic Subscription - 14,900 IR Toman - 5 TRX", callback_data="plan_4")],
+            [InlineKeyboardButton(text="Normal Subscription - 24,900 IR Toman - 8 TRX", callback_data="plan_5")],
+            [InlineKeyboardButton(text="Pro Subscription - 49,900 IR Toman - 15 TRX", callback_data="plan_6")],
             [InlineKeyboardButton(text="Back", callback_data="subscription_options")]
         ]
         reply = subscription_costs[user['lang']]
@@ -152,19 +168,18 @@ async def generate_payment_link(update: Update, context: CallbackContext):
     plan = plan.split('_')[1]
 
     if payment_method == "irr":
-        payment_link = f"به زودی ...📍"
+        payment_link = Zarinpal[plan]
     elif payment_method == "trx":
         client = TRX()
         invoice = await client.create_invoice(config['PRICES'][plan])
         payment_link = invoice['invoice_url']
         id = invoice['txn_id']
         context.user_data['trans_id'] = id
-    
     reply_keyboard = [
         [InlineKeyboardButton(text="Done", callback_data=f"conf_{payment_method}_{plan}")]
     ]
     reply_keyboard = InlineKeyboardMarkup(reply_keyboard)
-    await query.edit_message_text(text=f"Please complete your payment here: {payment_link}", reply_markup=reply_keyboard)
+    await query.edit_message_text(text=f"Please complete your payment here:\n {payment_link}\nclick on Done button after you made the payment.", reply_markup=reply_keyboard)
 
 async def confirm_subscription(update: Update, context: CallbackContext):
     query = update.callback_query
@@ -172,6 +187,8 @@ async def confirm_subscription(update: Update, context: CallbackContext):
 
     payment_method = query.data.split('_')[1:]
     payment_method, plan = payment_method[0], payment_method[1]
+
+    mysql = Mysql()
 
     if payment_method == 'trx':
         if 'trans_id' in context.user_data:
@@ -181,12 +198,10 @@ async def confirm_subscription(update: Update, context: CallbackContext):
             txn_id = response['data']['operations'][0]['txn_id']
             price = int(float(response['data']['operations'][0]['invoice_total_sum']))
             date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-            mysql = Mysql()
             mysql.insertOne("""
                 INSERT INTO payments (user_id, plan, price, txn_id, created_at, status)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, value=[update.effective_user.id, plan, price, txn_id, date_time, status])
-            mysql.end()
             if status == 'completed':
                 creds(update.effective_user.id, plan)
                 text = "Successful"
@@ -194,9 +209,15 @@ async def confirm_subscription(update: Update, context: CallbackContext):
                 text = "The payment was unsuccessful"
 
     elif payment_method == 'irr':
-        pass
+        mysql.insertOne("""
+            INSERT INTO payments (user_id, plan, created_at)
+            VALUES (%s, %s, %s)
+        """, value=[update.effective_user.id, plan, date_time])
+        text = "در صورت موفقیت بودن پرداختتون اشتراکتون به زودی فعال میشه!"
+    
+    mysql.end()
 
-    await query.edit_message_text(text)
+    await query.edit_message_text(text, reply_markup=create_reply_keyboard(context.user_data['lang']))
 
 
 
