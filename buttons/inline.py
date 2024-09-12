@@ -18,7 +18,11 @@ async def show_chat_modes_handle(update: Update, context: ContextTypes.DEFAULT_T
         text, inline_reply_markup = get_chat_mode_menu(0, lang)
         await update.message.reply_text(text, reply_markup=inline_reply_markup, parse_mode=ParseMode.HTML)
     else:
-        await update.message.reply_text("Please use /start again, we had updates!")
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+        await update.message.reply_text(text, reply_markup=inline_reply_markup, parse_mode=ParseMode.HTML)
 
 
 with open("chat_modes.yml", encoding='utf-8') as f:
@@ -79,8 +83,16 @@ async def show_chat_modes_callback_handle(update: Update, context: ContextTypes.
             if str(e).startswith("Message is not modified"):
                 pass
     else:
-        await update.message.reply_text("Please use /start again, we had updates!")
-
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+        text, markup = get_chat_mode_menu(page_index, lang)
+        try:
+            await query.edit_message_text(text, reply_markup=markup, parse_mode=ParseMode.HTML)
+        except BadRequest as e:
+            if str(e).startswith("Message is not modified"):
+                pass
 
 
 async def set_chat_mode_handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -118,4 +130,12 @@ async def cancel_chat_mode_handle(update: Update, context: ContextTypes.DEFAULT_
             parse_mode=ParseMode.HTML, reply_markup=create_reply_keyboard(lang)
         )
     else:
-        await update.message.reply_text("Please use /start again, we had updates!")
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+        await context.bot.send_message(
+            update.callback_query.message.chat.id,
+            text="Cancelled. \nYou can continue to ask me questions now.",
+            parse_mode=ParseMode.HTML, reply_markup=create_reply_keyboard(lang)
+        )

@@ -32,7 +32,7 @@ async def show_referral_info(update: Update, context: CallbackContext):
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    reply_text = give_referral_link[context.user_data['lang']].safe_substitute(referral_link=referral_link, referral_count=referral_count)
+    reply_text = give_referral_link[user.get('lang')].safe_substitute(referral_link=referral_link, referral_count=referral_count)
     await update.message.reply_text(reply_text, disable_web_page_preview=True, reply_markup=reply_markup)
     mysql.end()
 
@@ -41,19 +41,23 @@ async def exchange(update : Update, context : CallbackContext):
     await query.answer()
 
     lang = context.user_data['lang']
-
     if lang:
-        keyboard = [
-            [InlineKeyboardButton(exchange_referrals_4o_mini[lang], callback_data='exc_gpt')],
-            [InlineKeyboardButton(exchange_referrals_voice_model[lang], callback_data='exc_voice')],
-            [InlineKeyboardButton(exchange_referrals_image_model[lang], callback_data='exc_im')],
-        ]
-
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(text="Choose your plan.", reply_markup=reply_markup)
+        pass
     else:
-        await update.message.reply_text("Please use /start again, we had updates!")
-        
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+    
+    keyboard = [
+        [InlineKeyboardButton(exchange_referrals_4o_mini[lang], callback_data='exc_gpt')],
+        [InlineKeyboardButton(exchange_referrals_voice_model[lang], callback_data='exc_voice')],
+        [InlineKeyboardButton(exchange_referrals_image_model[lang], callback_data='exc_im')],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(text="Choose your plan.", reply_markup=reply_markup)
+    
 async def exchange_handler(update : Update, context : CallbackContext):
     query = update.callback_query
     await query.answer()

@@ -16,27 +16,47 @@ async def handle_voice(update: Update, context: CallbackContext):
     query = update.callback_query
     await query.answer()
     lang = context.user_data['lang']
-
     if lang:
-        if query.data == "voice_tts":
-            await query.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
-            context.user_data['awaiting_prompt'] = True
-            return VOICE
-        elif query.data == "voice_stt":
-            await handle_speech_to_text(update, context)
-            return VOICE
+        pass
     else:
-        await query.message.reply_text("Please use /start again, we had updates!")
-        return CHOOSING
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+    
+    if query.data == "voice_tts":
+        await query.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
+        context.user_data['awaiting_prompt'] = True
+        return VOICE
+    elif query.data == "voice_stt":
+        await handle_speech_to_text(update, context)
+        return VOICE
 
 async def choose(update: Update, context: CallbackContext):
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(voice_back_respond[context.user_data['lang']])
+    
+    lang = context.user_data['lang']
+    if lang:
+        pass
+    else:
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+
+    await query.edit_message_text(voice_back_respond[lang])
     return CHOOSING
 
 async def voice_options(update: Update, context: CallbackContext):
     lang = context.user_data['lang']
+    if lang:
+        pass
+    else:
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
     keyboard = [
         [
             InlineKeyboardButton("Speech to Text", callback_data='voice_stt'),
@@ -46,23 +66,23 @@ async def voice_options(update: Update, context: CallbackContext):
             InlineKeyboardButton("Back", callback_data='vice_back')
         ]
     ]
-    if lang:
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text(voice_reply_text[lang], reply_markup=reply_markup)
-        return VOICE
-    else:
-        await update.message.reply_text("Please use /start again, we had updates!")
-        return CHOOSING
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(voice_reply_text[lang], reply_markup=reply_markup)
+    return VOICE
 
 async def handle_speech_to_text(update: Update, context: CallbackContext):
     query = update.callback_query
     await query.answer()
     lang = context.user_data['lang']
     if lang:
-        await query.message.reply_text(handle_stt[lang], reply_markup=create_back_button_keyboard())
-        context.user_data['awaiting_audio'] = True
+        pass
     else:
-        await query.message.reply_text("Please use /start again, we had updates!")
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+    await query.message.reply_text(handle_stt[lang], reply_markup=create_back_button_keyboard())
+    context.user_data['awaiting_audio'] = True
 
 async def transcribe_audio(update: Update, context: CallbackContext):
     if 'awaiting_audio' in context.user_data and context.user_data['awaiting_audio']:
@@ -122,16 +142,28 @@ async def handle_text_to_speech(update: Update, context: CallbackContext):
     await query.answer()
     lang = context.user_data['lang']
     if lang:
-        await query.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
-        context.user_data['awaiting_prompt'] = True
+        pass
     else:
-        await query.message.reply_text("Please use /start again, we had updates!")
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+    await query.message.reply_text(voice_tts_respond[lang], reply_markup=create_back_button_keyboard())
+    context.user_data['awaiting_prompt'] = True
 
 async def tts(update: Update, context: CallbackContext):
+    lang = context.user_data['lang']
+    if lang:
+        pass
+    else:
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
     if update.message and update.message.text == BACK_BUTTON:
         await update.message.reply_text(
             "Returning to the main menu.", 
-            reply_markup=create_reply_keyboard(context.user_data['lang'])
+            reply_markup=create_reply_keyboard(lang)
         )
         return CHOOSING
     if 'awaiting_prompt' in context.user_data and context.user_data['awaiting_prompt']:

@@ -6,9 +6,13 @@ from buttons.templates import say_help
 
 
 async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    lang = context.user_data['lang']
-    if lang:
-        await update.message.reply_text(say_help[lang])
+    
+    if context.user_data['lang']:
+        lang = context.user_data['lang']
     else:
-        await update.message.reply_text("Please use /start again, we had updates!")
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+    await update.message.reply_text(say_help[lang])
     return CHOOSING

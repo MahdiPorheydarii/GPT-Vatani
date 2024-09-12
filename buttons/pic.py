@@ -15,24 +15,33 @@ def create_back_button_keyboard():
 
 async def handle_text_to_pic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     back_keyboard = create_back_button_keyboard()
-    
-    await update.message.reply_text(
-        text_to_image[context.user_data['lang']], 
-        reply_markup=back_keyboard
-    )
-    return TYPING_TEXT_FOR_IMAGE
-async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message.text == BACK_BUTTON:
+    lang = context.user_data['lang']
+    if lang:
         await update.message.reply_text(
-            "Returning to the main menu.", 
-            reply_markup=create_reply_keyboard(context.user_data['lang'])
+            text_to_image[lang], 
+            reply_markup=back_keyboard
         )
-        return CHOOSING 
-
+    else:
+        mysql = Mysql()
+        user = mysql.getOne("select lang from users where user_id=%s", update.effective_user.id)
+        mysql.end()
+        lang = user.get('lang')
+        await update.message.reply_text(
+            text_to_image[lang], 
+            reply_markup=back_keyboard
+        )
+        return TYPING_TEXT_FOR_IMAGE
+    
+async def generate_pic(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mysql = Mysql()
     user = mysql.getOne("select * from users where user_id=%s", update.effective_user.id)
     prompt = update.message.text
-    
+    if update.message.text == BACK_BUTTON:
+        await update.message.reply_text(
+            "Returning to the main menu.", 
+            reply_markup=create_reply_keyboard(user.get('lang'))
+        )
+        return CHOOSING 
     if prompt:
         url = "https://api.monsterapi.ai/v1/generate/sdxl-base"
         payload = {
